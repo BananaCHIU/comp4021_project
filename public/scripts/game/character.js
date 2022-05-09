@@ -24,6 +24,7 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
     // - `7` - moving down
     // - `8` - moving left-down
     let direction = 0;
+    let facingDirection = 7;
 
     // This function sets the player's moving direction.
     // - `dir` - the moving direction (1: Left, 2: Up, 3: Right, 4: Down)
@@ -40,6 +41,7 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
                 case 8: sprite.setSequence(sequences.moveLeftDown); break;
             }
             direction = dir;
+            facingDirection = dir;
         }
     };
 
@@ -98,7 +100,7 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
     };
 
     const getDirection = () => {
-      return direction;
+      return facingDirection;
     }
 
     // The methods are returned as an object here.

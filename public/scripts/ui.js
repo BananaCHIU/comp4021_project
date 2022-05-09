@@ -182,6 +182,8 @@ const GamePanel = (() => {
 
     let gaming = false;
     let gameArea, player;
+    let bullets = [];
+    let fired = false;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -227,6 +229,9 @@ const GamePanel = (() => {
         // fires.forEach((fire) => {
         //     fire.update(now)
         // })
+        bullets.forEach((bullet) => {
+            bullet.update();
+        })
 
         /* Randomize the gem and collect the gem here */
         // if(gem.getAge(now) >= gemMaxAge){
@@ -248,6 +253,10 @@ const GamePanel = (() => {
         // fires.forEach((fire) => {
         //     fire.draw()
         // })
+        bullets.forEach((bullet) => {
+            bullet.draw();
+        })
+
         /* Process the next frame */
         requestAnimationFrame(doFrame);
     }
@@ -297,8 +306,9 @@ const GamePanel = (() => {
                 walking = true;
                 player.move(8);
             }
-            if(keys[32]){
-                //TODO shoot
+            if(keys[32] && !fired){
+                bullets.push(Projectile(context, player, gameArea));
+                fired = true;
             }
             if(prevWalking !== walking){
                 sounds.footstep.play();
@@ -361,10 +371,8 @@ const GamePanel = (() => {
                 walking = false;
                 player.stop();
             }
-            if(keys[32]) {
-                //TODO shoot
-            }else{
-                //TODO stop shoot
+            if(!keys[32]) {
+                fired = false;
             }
             if(walking !== prevWalking){
                 prevWalking = false;
