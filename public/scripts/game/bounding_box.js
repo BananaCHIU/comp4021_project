@@ -36,6 +36,13 @@ const BoundingBox = function(ctx, top, left, bottom, right) {
         return right;
     };
 
+    const getCenter = () => {
+        return {
+            x: left + (right - left) / 2,
+            y: top + (bottom - top) / 2
+        }
+    }
+
     // This function gets the four corner points of the bounding box.
     const getPoints = function() {
         return {
@@ -85,6 +92,7 @@ const BoundingBox = function(ctx, top, left, bottom, right) {
         getLeft: getLeft,
         getBottom: getBottom,
         getRight: getRight,
+        getCenter: getCenter,
         getPoints: getPoints,
         isPointInBox: isPointInBox,
         intersect: intersect,
