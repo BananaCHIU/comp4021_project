@@ -3,5 +3,10 @@
   "name": "herman",
   "avatar": "Octopus",
   "password": "$2b$10$XctVMUQgMFxtMtlnovv.EeiXRz2IYRj29RmZ/ZtpyQJyq/mhDwH/G"
+ },
+ "Isaac": {
+  "name": "Isaac Lee",
+  "avatar": "Rabbit Face",
+  "password": "$2b$10$fZbmFDsJAouCb6SW4x1THuMULmpWB79RNbVHO3V9m5XhjFXjTT/ty"
  }
 }

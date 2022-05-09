@@ -182,9 +182,14 @@ button.icon:active {
     cursor: pointer;
 }
 
-/* Main panel */
-#main-panel {
+/* Game Container */
+#game-container {
     height: calc(100% - 80px);
+}
+
+canvas {
+    background: url("assets/background.png");
+    background-size: cover;
 }
 
 /* Signin overlay */
