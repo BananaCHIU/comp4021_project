@@ -22,7 +22,7 @@ const SignInForm = (function() {
                     hide();
                     UserPanel.update(Authentication.getUser());
                     UserPanel.show();
-
+                    GamePanel.gameStart();
                     Socket.connect();
                 },
                 (error) => { $("#signin-message").text(error); }
@@ -199,7 +199,7 @@ const GamePanel = (() => {
     // let collectedGems = 0;      // The number of gems collected in the game
 
     /* Create the game area */
-    const gameArea = BoundingBox(context, 0, 0, 800, 1920);
+    const gameArea = BoundingBox(context, 165, 60, 420, 800);
 
     /* Create the sprites in the game */
     const player = Player(context, 427, 240, gameArea); // The player
@@ -210,7 +210,6 @@ const GamePanel = (() => {
     //     Fire(context, ...gameArea.getPoints().bottomLeft),
     //     Fire(context, ...gameArea.getPoints().bottomRight)
     // ];
-    const bullets = [];
 
     const doFrame = (now) => {
         if (gameStartTime == 0) gameStartTime = now;
@@ -234,9 +233,6 @@ const GamePanel = (() => {
         // fires.forEach((fire) => {
         //     fire.update(now)
         // })
-        bullets.forEach((bullet) => {
-            bullet.update();
-        })
 
         /* Randomize the gem and collect the gem here */
         // if(gem.getAge(now) >= gemMaxAge){
@@ -258,10 +254,6 @@ const GamePanel = (() => {
         // fires.forEach((fire) => {
         //     fire.draw()
         // })
-        bullets.forEach((bullet) => {
-            bullet.draw();
-        })
-
         /* Process the next frame */
         requestAnimationFrame(doFrame);
     }
@@ -294,9 +286,6 @@ const GamePanel = (() => {
                 case 32:
                     player.speedUp();
                     break;
-                case 13:
-                    //TODO: change the direction parameter
-                    bullets.push(Projectile(context, player, gameArea, 1))
             }
 
         });

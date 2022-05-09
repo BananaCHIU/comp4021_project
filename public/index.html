@@ -95,8 +95,7 @@
                 SignInForm.hide();
                 UserPanel.update(Authentication.getUser());
                 UserPanel.show();
-                GamePanel.initialize();
-
+                GamePanel.gameStart();
                 Socket.connect();
 
             },

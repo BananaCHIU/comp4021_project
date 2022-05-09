@@ -120,7 +120,7 @@ const Sprite = function(ctx, x, y) {
         ctx.fillStyle = "black";
         ctx.globalAlpha = 0.6;
         ctx.beginPath();
-        ctx.ellipse(x, y + size.height / 2,
+        ctx.ellipse(x, y,
                     shadowWidth / 2, shadowHeight / 2, 0, 0, 2 * Math.PI);
         ctx.fill();
 
@@ -135,7 +135,7 @@ const Sprite = function(ctx, x, y) {
 
         /* Get the display size of the sprite */
         const size = getDisplaySize();
-
+        const cv = $("canvas").get(0);
 
         /* TODO */
         /* Replace the following code to draw the sprite correctly */
@@ -143,6 +143,9 @@ const Sprite = function(ctx, x, y) {
         // ctx.globalAlpha = 0.6;
         // ctx.fillRect(parseInt(x - size.width / 2), parseInt(y - size.height / 2),
         //              size.width, size.height);
+        ctx.translate(x , y);
+        ctx.rotate(sequence.rotate * Math.PI/180);
+        ctx.translate(-x, -y);
         ctx.drawImage(sheet,
             sequence.x + index * sequence.width,
             sequence.y, sequence.width,
@@ -169,9 +172,6 @@ const Sprite = function(ctx, x, y) {
     // - `time` - The timestamp when this function is called
     const update = function(time) {
         if (lastUpdate == 0) lastUpdate = time;
-
-
-        /* TODO */
         /* Move to the next sprite when the timing is right */
         if ( time - lastUpdate >= sequence.timing) {
             index++;
