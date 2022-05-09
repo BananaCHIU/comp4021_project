@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const session = require("express-session");
 
+const _ = require('lodash');
+
 // Create the Express app
 const app = express();
 
@@ -140,6 +142,8 @@ io.use((socket, next) => {
 });
 
 let onlineUsers = {};
+let player1 = null;
+let player2 = null;
 io.on("connection", (socket) => {
     // Add a new user to the online user list
 
@@ -150,9 +154,27 @@ io.on("connection", (socket) => {
             // Remove the user from the online user list
             delete onlineUsers[username];
         });
-        socket.on("get users", () => {
-            // Send the online users to the browser
-            io.emit("users", JSON.stringify(onlineUsers));
+        socket.on("add player", (content) => {
+            if(content.num === 1 && !_.isEqual(content.user, player2)) {
+                player1 = content.user;
+                io.emit("players", JSON.stringify({1:player1, 2:player2}));
+                io.emit("add player", JSON.stringify(content));
+            }
+            else if(content.num === 2 && !_.isEqual(content.user, player1)) {
+                player2 = content.user;
+                io.emit("players", JSON.stringify({1:player1, 2:player2}));
+                io.emit("add player", JSON.stringify(content));
+            }
+        });
+        socket.on("remove player", (content) => {
+            if(content.num === 1) {
+                player1 = null;
+            }
+            else if(content.num === 2) {
+                player2 = null;
+            }
+            io.emit("players", JSON.stringify({1:player1, 2:player2}));
+            io.emit("remove player", JSON.stringify(content));
         });
         // socket.on("get messages", () => {
         //     // Send the chatroom messages to the browser

@@ -14,34 +14,33 @@ const Socket = (function() {
         // Wait for the socket to connect successfully
         socket.on("connect", () => {
             // Get the online user list
-            socket.emit("get users");
+            socket.emit("get players");
 
             // // Get the chatroom messages
             // socket.emit("get messages");
         });
 
         // Set up the users event
-        socket.on("users", (onlineUsers) => {
-            onlineUsers = JSON.parse(onlineUsers);
+        socket.on("players", (onlinePlayers) => {
+            onlinePlayers = JSON.parse(onlinePlayers);
 
             // Show the online users
-            OnlineUsersPanel.update(onlineUsers);
-        });
-
-        // Set up the add user event
-        socket.on("add user", (user) => {
-            user = JSON.parse(user);
-
-            // Add the online user
-            OnlineUsersPanel.addUser(user);
+            PlayerPairUpPanel.update(onlinePlayers);
         });
 
         // Set up the remove user event
-        socket.on("remove user", (user) => {
-            user = JSON.parse(user);
+        socket.on("remove player", (content) => {
+            content = JSON.parse(content)
             // Remove the online user
-            OnlineUsersPanel.removeUser(user);
+            PlayerPairUpPanel.removeUser(content.user, content.num);
         });
+
+        socket.on("add player", (content) => {
+            content = JSON.parse(content);
+
+            PlayerPairUpPanel.addUser(content.user, content.num);
+        });
+
 
         // // Set up the messages event
         // socket.on("messages", (chatroom) => {
@@ -70,6 +69,18 @@ const Socket = (function() {
         socket = null;
     };
 
+    const addPlayer = (content) => {
+        if (socket && socket.connected) {
+            socket.emit("add player", content);
+        }
+    }
+
+    const removePlayer = (content) => {
+        if (socket && socket.connected) {
+            socket.emit("remove player", content);
+        }
+    }
+
     // // This function sends a post message event to the server
     // const postMessage = function(content) {
     //     if (socket && socket.connected) {
@@ -83,5 +94,5 @@ const Socket = (function() {
     //     }
     // }
 
-    return { getSocket, connect, disconnect };
+    return { getSocket, connect, disconnect, addPlayer, removePlayer };
 })();

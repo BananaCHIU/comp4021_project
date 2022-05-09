@@ -22,7 +22,8 @@ const SignInForm = (function() {
                     hide();
                     UserPanel.update(Authentication.getUser());
                     UserPanel.show();
-                    GamePanel.gameStart();
+                    PlayerPairUpPanel.show(Authentication.getUser());
+                    // GamePanel.gameStart();
                     Socket.connect();
                 },
                 (error) => { $("#signin-message").text(error); }
@@ -96,12 +97,12 @@ const UserPanel = (function() {
 
     // This function shows the form with the user
     const show = function(user) {
-        $("#user-panel").show();
+        $("#user-panel").fadeIn(500);
     };
 
     // This function hides the form
     const hide = function() {
-        $("#user-panel").hide();
+        $("#user-panel").fadeOut(500);
     };
 
     // This function updates the user panel
@@ -119,59 +120,52 @@ const UserPanel = (function() {
     return { initialize, show, hide, update };
 })();
 
-const OnlineUsersPanel = (function() {
+const PlayerPairUpPanel = (function() {
+    let onlinePlayers = {1: null, 2: null};
     // This function initializes the UI
-    const initialize = function() {};
+    const initialize = function() {
+        $("#pair-up-overlay").hide();
+    };
 
-    // This function updates the online users panel
-    const update = function(onlineUsers) {
-        const onlineUsersArea = $("#online-users-area");
-
-        // Clear the online users area
-        onlineUsersArea.empty();
-
-		// Get the current user
-        const currentUser = Authentication.getUser();
-
-        // Add the user one-by-one
-        for (const username in onlineUsers) {
-            if (username != currentUser.username) {
-                onlineUsersArea.append(
-                    $("<div id='username-" + username + "'></div>")
-                        .append(UI.getUserDisplay(onlineUsers[username]))
-                );
-            }
-        }
+    const update = function(players) {
+        onlinePlayers = players;
     };
 
     // This function adds a user in the panel
-	const addUser = function(user) {
-        const onlineUsersArea = $("#online-users-area");
-		
-		// Find the user
-		const userDiv = onlineUsersArea.find("#username-" + user.username);
-		
-		// Add the user
-		if (userDiv.length == 0) {
-			onlineUsersArea.append(
-				$("<div id='username-" + user.username + "'></div>")
-					.append(UI.getUserDisplay(user))
-			);
-		}
+	const addUser = function(user, num) {
+        $(`#player${num}-pair .player${num}-avatar`).html(Avatar.getCode(user.avatar));
+        $(`#player${num}-pair .player${num}-name`).text(user.name);
 	};
 
     // This function removes a user from the panel
-	const removeUser = function(user) {
-        const onlineUsersArea = $("#online-users-area");
-		
-		// Find the user
-		const userDiv = onlineUsersArea.find("#username-" + user.username);
-		
-		// Remove the user
-		if (userDiv.length > 0) userDiv.remove();
+	const removeUser = function(user, num) {
+        $(`#player${num}-pair .player${num}-avatar`).html("");
+        $(`#player${num}-pair .player${num}-name`).text(`PLAYER ${num}`);
 	};
 
-    return { initialize, update, addUser, removeUser };
+    const show = function(user) {
+        $("#pair-up-overlay").show();
+        $("#player1-pair").on("click", () => {
+            if(onlinePlayers[1] === null){
+                Socket.addPlayer({user, num: 1});
+            }else{
+                Socket.removePlayer({user, num: 1});
+            }
+        });
+        $("#player2-pair").on("click", () => {
+            if(onlinePlayers[2]  === null){
+                Socket.addPlayer({user, num: 2});
+            }else{
+                Socket.removePlayer({user, num: 2});
+            }
+        });
+    };
+
+    const hide = function() {
+        $("#pair-up-overlay").hide();
+    };
+
+    return { initialize, update, addUser, removeUser, show, hide };
 })();
 
 //Game Panel
@@ -197,7 +191,8 @@ const GamePanel = (() => {
     };
 
     sounds.footstep.loop = true;
-    sounds.footstep.volume = 0.5;
+    sounds.footstep.volume = 0.3;
+    sounds.shoot.volume = 0.2;
     sounds.background.loop = true;
 
     let gameStartTime = 0;      // The timestamp when the game starts
@@ -308,6 +303,13 @@ const GamePanel = (() => {
             }
             if(keys[32] && !fired){
                 bullets.push(Projectile(context, player, gameArea));
+                sounds.shoot.currentTime = 0;
+                sounds.shoot.play();
+                setTimeout(() => {
+                    sounds.shellDrop.currentTime = 0;
+                    sounds.shellDrop.play();
+                }, 200)
+
                 fired = true;
             }
             if(prevWalking !== walking){
@@ -497,7 +499,7 @@ const UI = (function() {
     };
 
     // The components of the UI are put here
-    const components = [SignInForm, UserPanel, OnlineUsersPanel];
+    const components = [SignInForm, UserPanel, PlayerPairUpPanel];
 
     // This function initializes the UI
     const initialize = function() {

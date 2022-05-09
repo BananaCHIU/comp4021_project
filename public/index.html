@@ -41,6 +41,21 @@
             </svg>
         </div>
     </div>
+    <div id="pair-up-overlay" class="overlay col">
+        <div class="content shadow col">
+            <div class="caption">SELECT PLAYER NUMBER</div>
+            <div class="spacer-0"></div>
+            <button id="player1-pair" class="pair-up-button" type="button">
+                    <span class="player1-avatar"></span>
+                    <span class="player1-name">PLAYER 1</span>
+            </button>
+            <div class="spacer-0"></div>
+            <button id="player2-pair" class="pair-up-button" type="button">
+                <span class="player2-avatar"></span>
+                <span class="player2-name">PLAYER 2</span>
+            </button>
+        </div>
+    </div>
 
     <div id="signin-overlay" class="overlay row">
         <div class="content shadow row">
@@ -95,7 +110,8 @@
                 SignInForm.hide();
                 UserPanel.update(Authentication.getUser());
                 UserPanel.show();
-                GamePanel.gameStart();
+                PlayerPairUpPanel.show(Authentication.getUser());
+                // GamePanel.gameStart();
                 Socket.connect();
 
             },
