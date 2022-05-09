@@ -7,23 +7,23 @@
     --input-background: #eee;
     --overlay-background: rgba(245, 114, 114, 0.8);
     --overlay-caption-color: #ff1204;
-    --overlay-content-background: linear-gradient(white, #fde0c5);
+    --overlay-content-background: linear-gradient(#000000, #930b00);
 
-    --header-background: linear-gradient(to right, #eb4a40, #1d8f13);
+    --header-background: linear-gradient(to right, #185400, #000000);
     --online-users-panel-background: linear-gradient(to right, #e7fdc5, #c5fdd2);
     --chat-panel-background: none;
 
-    --title-color: white;
+    --title-color: #790000;
     --caption-color: white;
 
     --font-color: black;
     --date-color: gray;
 
-    --register-form-background: linear-gradient(#ffd9d9, #ff7474);
+    --register-form-background: linear-gradient(#000000, #1e7700);
     --warning-color: red;
 
     --button-color: white;
-    --button-background: #ff7474;
+    --button-background: #000000;
     --button-background-hover: rgba(245, 114, 114, 0.8);
 }
 * {

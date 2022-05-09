@@ -11,25 +11,33 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
     sprite.setSequence(sequences.idleDown)
         .setScale(1)
         .useSheet("assets/character_sprites.png")
-        .setShadowScale({ x: 0.75, y: 0.20 });
+        .setShadowScale({ x: 0.5, y: 0.5 });
 
     // This is the moving direction, which can be a number from 0 to 4:
     // - `0` - not moving
-    // - `1` - moving to the left
-    // - `2` - moving up
-    // - `3` - moving to the right
-    // - `4` - moving down
+    // - `1` - moving left
+    // - `2` - moving left-up
+    // - `3` - moving up
+    // - `4` - moving right-up
+    // - `5` - moving right
+    // - `6` - moving right-down
+    // - `7` - moving down
+    // - `8` - moving left-down
     let direction = 0;
 
     // This function sets the player's moving direction.
     // - `dir` - the moving direction (1: Left, 2: Up, 3: Right, 4: Down)
     const move = function(dir) {
-        if (dir >= 1 && dir <= 4 && dir !== direction) {
+        if (dir >= 1 && dir <= 8 && dir !== direction) {
             switch (dir) {
                 case 1: sprite.setSequence(sequences.moveLeft); break;
-                case 2: sprite.setSequence(sequences.moveUp); break;
-                case 3: sprite.setSequence(sequences.moveRight); break;
-                case 4: sprite.setSequence(sequences.moveDown); break;
+                case 2: sprite.setSequence(sequences.moveLeftUp); break;
+                case 3: sprite.setSequence(sequences.moveUp); break;
+                case 4: sprite.setSequence(sequences.moveRightUp); break;
+                case 5: sprite.setSequence(sequences.moveRight); break;
+                case 6: sprite.setSequence(sequences.moveRightDown); break;
+                case 7: sprite.setSequence(sequences.moveDown); break;
+                case 8: sprite.setSequence(sequences.moveLeftDown); break;
             }
             direction = dir;
         }
@@ -37,16 +45,18 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
 
     // This function stops the player from moving.
     // - `dir` - the moving direction when the player is stopped (1: Left, 2: Up, 3: Right, 4: Down)
-    const stop = function(dir) {
-        if (direction === dir) {
-            switch (dir) {
-                case 1: sprite.setSequence(sequences.idleLeft); break;
-                case 2: sprite.setSequence(sequences.idleUp); break;
-                case 3: sprite.setSequence(sequences.idleRight); break;
-                case 4: sprite.setSequence(sequences.idleDown); break;
-            }
-            direction = 0;
+    const stop = function() {
+        switch (direction) {
+            case 1: sprite.setSequence(sequences.idleLeft); break;
+            case 2: sprite.setSequence(sequences.idleLeftUp); break;
+            case 3: sprite.setSequence(sequences.idleUp); break;
+            case 4: sprite.setSequence(sequences.idleRightUp); break;
+            case 5: sprite.setSequence(sequences.idleRight); break;
+            case 6: sprite.setSequence(sequences.idleRightDown); break;
+            case 7: sprite.setSequence(sequences.idleDown); break;
+            case 8: sprite.setSequence(sequences.idleLeftDown); break;
         }
+        direction = 0;
     };
 
     // This function speeds up the player.
@@ -69,9 +79,13 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
             /* Move the player */
             switch (direction) {
                 case 1: x -= speed / 60; break;
-                case 2: y -= speed / 60; break;
-                case 3: x += speed / 60; break;
-                case 4: y += speed / 60; break;
+                case 2: x -= speed / 90; y -= speed / 90; break;
+                case 3: y -= speed / 60; break;
+                case 4: x += speed / 90; y -= speed / 90; break;
+                case 5: x += speed / 60; break;
+                case 6: x += speed / 90; y += speed / 90; break;
+                case 7: y += speed / 60; break;
+                case 8: x -= speed / 90; y += speed / 90; break;
             }
 
             /* Set the new position if it is within the game area */

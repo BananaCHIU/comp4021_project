@@ -261,59 +261,103 @@ const GamePanel = (() => {
     const gameStart = function () {
         /* Hide the start screen */
         sounds.background.play().then();
+
+        let keys = {};
         // $("#game-start").hide();
         // gem.randomize(gameArea);
         /* Handle the keydown of arrow keys and spacebar */
         $(document).on("keydown", function(event) {
             /* Handle the key down */
-            switch (event.keyCode) {
-                case 37:
-                    //left
-                    player.move(1)
-                    break;
-                case 38:
-                    //up
-                    player.move(2)
-                    break;
-                case 39:
-                    //right
-                    player.move(3)
-                    break;
-                case 40:
-                    //down
-                    player.move(4)
-                    break;
-                case 32:
-                    player.speedUp();
-                    break;
+            keys[event.keyCode] = true;
+            if(keys[37] && !keys[38] && !keys[39] && !keys[40] && !keys[32]){
+                player.move(1);
+            }else if(keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+                player.move(2);
+            }else if(!keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+                player.move(3);
+            }else if(!keys[37] && keys[38] && keys[39] && !keys[40] && !keys[32]){
+                player.move(4);
+            }else if(!keys[37] && !keys[38] && keys[39] && !keys[40] && !keys[32]){
+                player.move(5);
+            }else if(!keys[37] && !keys[38] && keys[39] && keys[40] && !keys[32]){
+                player.move(6);
+            }else if(!keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+                player.move(7);
+            }else if(keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+                player.move(8);
+            }else if(!keys[37] && !keys[38] && !keys[39] && !keys[40] && keys[32]){
+                //shoot
             }
+            // switch (event.keyCode) {
+            //     case 37:
+            //         //left
+            //         player.move(1)
+            //         break;
+            //     case 38:
+            //         //up
+            //         player.move(2)
+            //         break;
+            //     case 39:
+            //         //right
+            //         player.move(3)
+            //         break;
+            //     case 40:
+            //         //down
+            //         player.move(4)
+            //         break;
+            //     case 32:
+            //         player.speedUp();
+            //         break;
+            // }
 
         });
 
         /* Handle the keyup of arrow keys and spacebar */
         $(document).on("keyup", function(event) {
-            /* Handle the key up */
-            switch (event.keyCode) {
-                case 37:
-                    //left
-                    player.stop(1)
-                    break;
-                case 38:
-                    //up
-                    player.stop(2)
-                    break;
-                case 39:
-                    //right
-                    player.stop(3)
-                    break;
-                case 40:
-                    //down
-                    player.stop(4)
-                    break;
-                case 32:
-                    player.slowDown();
-                    break;
+            // /* Handle the key up */
+            keys[event.keyCode] = false;
+            if(keys[37] && !keys[38] && !keys[39] && !keys[40] && !keys[32]){
+                player.move(1);
+            }else if(keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+                player.move(2);
+            }else if(!keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+                player.move(3);
+            }else if(!keys[37] && keys[38] && keys[39] && !keys[40] && !keys[32]){
+                player.move(4);
+            }else if(!keys[37] && !keys[38] && keys[39] && !keys[40] && !keys[32]){
+                player.move(5);
+            }else if(!keys[37] && !keys[38] && keys[39] && keys[40] && !keys[32]){
+                player.move(6);
+            }else if(!keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+                player.move(7);
+            }else if(keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+                player.move(8);
+            }else if(!keys[37] && !keys[38] && !keys[39] && !keys[40] && keys[32]){
+                //shoot
+            }else{
+                player.stop();
             }
+            // switch (event.keyCode) {
+            //     case 37:
+            //         //left
+            //         player.stop(1)
+            //         break;
+            //     case 38:
+            //         //up
+            //         player.stop(2)
+            //         break;
+            //     case 39:
+            //         //right
+            //         player.stop(3)
+            //         break;
+            //     case 40:
+            //         //down
+            //         player.stop(4)
+            //         break;
+            //     case 32:
+            //         player.slowDown();
+            //         break;
+            // }
 
         });
         /* Start the game */
