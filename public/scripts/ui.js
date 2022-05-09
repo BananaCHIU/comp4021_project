@@ -86,7 +86,7 @@ const UserPanel = (function() {
             Authentication.signout(
                 () => {
                     Socket.disconnect();
-
+                    GamePanel.gameOver();
                     hide();
                     SignInForm.show();
                 }
@@ -177,11 +177,12 @@ const OnlineUsersPanel = (function() {
 //Game Panel
 const GamePanel = (() => {
 
-    /* Get the canvas and 2D context */
     const cv = $("canvas").get(0);
     const context = cv.getContext("2d");
 
-    /* Create the sounds */
+    let gaming = false;
+    let gameArea, player;
+
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
         footstep: new Audio("assets/footstep.mp3"),
@@ -193,25 +194,18 @@ const GamePanel = (() => {
         gameover: new Audio("assets/gameover.mp3")
     };
 
-    // const totalGameTime = 20;   // Total game time in seconds
-    // const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
+    sounds.footstep.loop = true;
+    sounds.footstep.volume = 0.5;
+    sounds.background.loop = true;
+
     let gameStartTime = 0;      // The timestamp when the game starts
     // let collectedGems = 0;      // The number of gems collected in the game
 
-    /* Create the game area */
-    const gameArea = BoundingBox(context, 165, 60, 740, 1860);
-
-    /* Create the sprites in the game */
-    const player = Player(context, 427, 240, gameArea); // The player
-    // const gem = Gem(context, 427, 350, "green");        // The gem
-    // const fires = [
-    //     Fire(context, ...gameArea.getPoints().topLeft),
-    //     Fire(context, ...gameArea.getPoints().topRight),
-    //     Fire(context, ...gameArea.getPoints().bottomLeft),
-    //     Fire(context, ...gameArea.getPoints().bottomRight)
-    // ];
+    const initialize = () => {
+    }
 
     const doFrame = (now) => {
+        if(!gaming) return;
         if (gameStartTime == 0) gameStartTime = now;
         /* Update the time remaining */
         // const gameTimeSoFar = now - gameStartTime;
@@ -259,49 +253,71 @@ const GamePanel = (() => {
     }
 
     const gameStart = function () {
+        gaming = true;
+        /* Create the game area */
+        gameArea = BoundingBox(context, 165, 60, 740, 1860);
+
+        /* Create the sprites in the game */
+        player = Player(context, 427, 240, gameArea); // The player
+
         /* Hide the start screen */
-        sounds.background.play().then();
+        sounds.background.play();
 
         let keys = {};
+        let prevWalking = false;
         // $("#game-start").hide();
         // gem.randomize(gameArea);
         /* Handle the keydown of arrow keys and spacebar */
         $(document).on("keydown", function(event) {
             /* Handle the key down */
+            let walking = prevWalking;
             keys[event.keyCode] = true;
-            if(keys[37] && !keys[38] && !keys[39] && !keys[40] && !keys[32]){
+            if(keys[65] && !keys[87] && !keys[68] && !keys[83]){
+                walking = true;
                 player.move(1);
-            }else if(keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+            }else if(keys[65] && keys[87] && !keys[68] && !keys[83]){
+                walking = true;
                 player.move(2);
-            }else if(!keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+            }else if(!keys[65] && keys[87] && !keys[68] && !keys[83]){
+                walking = true;
                 player.move(3);
-            }else if(!keys[37] && keys[38] && keys[39] && !keys[40] && !keys[32]){
+            }else if(!keys[65] && keys[87] && keys[68] && !keys[83]){
+                walking = true;
                 player.move(4);
-            }else if(!keys[37] && !keys[38] && keys[39] && !keys[40] && !keys[32]){
+            }else if(!keys[65] && !keys[87] && keys[68] && !keys[83]){
+                walking = true;
                 player.move(5);
-            }else if(!keys[37] && !keys[38] && keys[39] && keys[40] && !keys[32]){
+            }else if(!keys[65] && !keys[87] && keys[68] && keys[83]){
+                walking = true;
                 player.move(6);
-            }else if(!keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+            }else if(!keys[65] && !keys[87] && !keys[68] && keys[83]){
+                walking = true;
                 player.move(7);
-            }else if(keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+            }else if(keys[65] && !keys[87] && !keys[68] && keys[83]){
+                walking = true;
                 player.move(8);
-            }else if(!keys[37] && !keys[38] && !keys[39] && !keys[40] && keys[32]){
-                //shoot
+            }
+            if(keys[32]){
+                //TODO shoot
+            }
+            if(prevWalking !== walking){
+                sounds.footstep.play();
+                prevWalking = true;
             }
             // switch (event.keyCode) {
-            //     case 37:
+            //     case 65:
             //         //left
             //         player.move(1)
             //         break;
-            //     case 38:
+            //     case 87:
             //         //up
             //         player.move(2)
             //         break;
-            //     case 39:
+            //     case 68:
             //         //right
             //         player.move(3)
             //         break;
-            //     case 40:
+            //     case 83:
             //         //down
             //         player.move(4)
             //         break;
@@ -315,42 +331,59 @@ const GamePanel = (() => {
         /* Handle the keyup of arrow keys and spacebar */
         $(document).on("keyup", function(event) {
             // /* Handle the key up */
+            let walking = prevWalking;
             keys[event.keyCode] = false;
-            if(keys[37] && !keys[38] && !keys[39] && !keys[40] && !keys[32]){
+            if(keys[65] && !keys[87] && !keys[68] && !keys[83]){
+                walking = true;
                 player.move(1);
-            }else if(keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+            }else if(keys[65] && keys[87] && !keys[68] && !keys[83]){
+                walking = true;
                 player.move(2);
-            }else if(!keys[37] && keys[38] && !keys[39] && !keys[40] && !keys[32]){
+            }else if(!keys[65] && keys[87] && !keys[68] && !keys[83]){
+                walking = true;
                 player.move(3);
-            }else if(!keys[37] && keys[38] && keys[39] && !keys[40] && !keys[32]){
+            }else if(!keys[65] && keys[87] && keys[68] && !keys[83]){
+                walking = true;
                 player.move(4);
-            }else if(!keys[37] && !keys[38] && keys[39] && !keys[40] && !keys[32]){
+            }else if(!keys[65] && !keys[87] && keys[68] && !keys[83]){
+                walking = true;
                 player.move(5);
-            }else if(!keys[37] && !keys[38] && keys[39] && keys[40] && !keys[32]){
+            }else if(!keys[65] && !keys[87] && keys[68] && keys[83]){
+                walking = true;
                 player.move(6);
-            }else if(!keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+            }else if(!keys[65] && !keys[87] && !keys[68] && keys[83]){
+                walking = true;
                 player.move(7);
-            }else if(keys[37] && !keys[38] && !keys[39] && keys[40] && !keys[32]){
+            }else if(keys[65] && !keys[87] && !keys[68] && keys[83]){
+                walking = true;
                 player.move(8);
-            }else if(!keys[37] && !keys[38] && !keys[39] && !keys[40] && keys[32]){
-                //shoot
             }else{
+                walking = false;
                 player.stop();
             }
+            if(keys[32]) {
+                //TODO shoot
+            }else{
+                //TODO stop shoot
+            }
+            if(walking !== prevWalking){
+                prevWalking = false;
+                sounds.footstep.pause();
+            }
             // switch (event.keyCode) {
-            //     case 37:
+            //     case 65:
             //         //left
             //         player.stop(1)
             //         break;
-            //     case 38:
+            //     case 87:
             //         //up
             //         player.stop(2)
             //         break;
-            //     case 39:
+            //     case 68:
             //         //right
             //         player.stop(3)
             //         break;
-            //     case 40:
+            //     case 83:
             //         //down
             //         player.stop(4)
             //         break;
@@ -364,7 +397,16 @@ const GamePanel = (() => {
         requestAnimationFrame(doFrame);
     }
 
-    return { gameStart };
+    const gameOver = () => {
+        gaming = false;
+        $(document).off('keyup');
+        $(document).off('keydown');
+        context.clearRect(0,0,cv.width,cv.height);
+        sounds.footstep.pause();
+        sounds.background.pause();
+    }
+
+    return { gameStart, initialize, gameOver };
 })();
 
 //

@@ -20,17 +20,17 @@ const Player = function(ctx, x, y, gameArea) {
         idleLeftDown:   { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 135, count: 1, timing: 2000, loop: false },
 
         /* Moving sprite sequences for facing different directions */
-        moveLeft:       { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 100, loop: true },
-        moveLeftUp:     { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 100, loop: true },
-        moveUp:         { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 100, loop: true },
-        moveRightUp:    { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 100, loop: true },
-        moveRight:      { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 100, loop: true },
-        moveRightDown:  { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 100, loop: true },
-        moveDown:       { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 100, loop: true },
-        moveLeftDown:   { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 100, loop: true },
+        moveLeft:       { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: true },
+        moveLeftUp:     { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: true },
+        moveUp:         { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: true },
+        moveRightUp:    { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: true },
+        moveRight:      { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: true },
+        moveRightDown:  { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: true },
+        moveDown:       { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: true },
+        moveLeftDown:   { x: 0, y: 0, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: true },
     };
 
-    let speed = 60;
+    let speed = 30;
 
     // This is the sprite object of the player created from the Sprite module.
     const character = Character(ctx, x, y, gameArea, sequences, speed);
