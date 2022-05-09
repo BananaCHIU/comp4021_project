@@ -119,7 +119,6 @@ app.get("/signout", (req, res) => {
     //
     // Deleting req.session.user
     //
-    console.log(req);
     io.emit("remove user", JSON.stringify(req.session.user));
     req.session.user = null;
     //

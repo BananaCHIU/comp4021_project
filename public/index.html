@@ -25,7 +25,20 @@
         </div>
 
         <div id="game-container">
-            <canvas width="1600px" height="800px"></canvas>
+            <canvas width="1920px" height="800px"></canvas>
+            <!--            Game Over Overlay           -->
+            <svg xmlns="http://www.w3.org/2000/svg" id="game-over" style="display: none">
+                <defs>
+                    <linearGradient id="game-over-fill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="red" />
+                        <stop offset="0.5" stop-color="green" />
+                        <stop offset="1" stop-color="red" />
+                    </linearGradient>
+                </defs>
+                <text x="50%" y="50%">
+                    You are DEAD.
+                </text>
+            </svg>
         </div>
     </div>
 
@@ -80,10 +93,164 @@
                 UserPanel.show();
 
                 Socket.connect();
+                prepareGameCanvas();
             },
             () => { SignInForm.show(); }
         );
     });
+
+    function prepareGameCanvas(){
+        /* Get the canvas and 2D context */
+        const cv = $("canvas").get(0);
+        const context = cv.getContext("2d");
+
+        /* Create the sounds */
+        const sounds = {
+            background: new Audio("assets/bgm.mp3"),
+            footstep: new Audio("assets/footstep.mp3"),
+            shellDrop: new Audio("assets/shell_drop.mp3"),
+            zombie0: new Audio("assets/zombie_0.mp3"),
+            zombie1: new Audio("assets/zombie_1.mp3"),
+            zombie2: new Audio("assets/zombie_2.mp3"),
+            shoot: new Audio("assets/shoot.mp3"),
+            gameover: new Audio("assets/gameover.mp3")
+        };
+
+        const totalGameTime = 20;   // Total game time in seconds
+        const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
+        let gameStartTime = 0;      // The timestamp when the game starts
+        let collectedGems = 0;      // The number of gems collected in the game
+
+        /* Create the game area */
+        const gameArea = BoundingBox(context, 165, 60, 420, 800);
+
+        /* Create the sprites in the game */
+        const player = Player(context, 427, 240, gameArea); // The player
+        const gem = Gem(context, 427, 350, "green");        // The gem
+        const fires = [
+            Fire(context, ...gameArea.getPoints().topLeft),
+            Fire(context, ...gameArea.getPoints().topRight),
+            Fire(context, ...gameArea.getPoints().bottomLeft),
+            Fire(context, ...gameArea.getPoints().bottomRight)
+        ];
+        /* The main processing of the game */
+        function doFrame(now) {
+            if (gameStartTime == 0) gameStartTime = now;
+
+            /* Update the time remaining */
+            const gameTimeSoFar = now - gameStartTime;
+            const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+            $("#time-remaining").text(timeRemaining);
+
+
+            /* Handle the game over situation here */
+            if(timeRemaining == 0){
+                sounds.background.pause();
+                sounds.collect.pause();
+                sounds.gameover.play();
+                $('#game-over').show();
+                $('#final-gems').text(collectedGems);
+                return;
+            }
+
+            /* Update the sprites */
+            gem.update(now);
+            player.update(now);
+            fires.forEach((fire) => {
+                fire.update(now)
+            })
+
+            /* Randomize the gem and collect the gem here */
+            if(gem.getAge(now) >= gemMaxAge){
+                gem.randomize(gameArea);
+            }
+            if(player.getBoundingBox().isPointInBox(gem.getXY().x, gem.getXY().y)){
+                sounds.collect.currentTime = 0;
+                sounds.collect.play();
+                collectedGems++;
+                gem.randomize(gameArea);
+            }
+
+            /* Clear the screen */
+            context.clearRect(0, 0, cv.width, cv.height);
+
+            /* Draw the sprites */
+            gem.draw();
+            player.draw();
+            fires.forEach((fire) => {
+                fire.draw()
+            })
+            /* Process the next frame */
+            requestAnimationFrame(doFrame);
+        }
+
+        /* Handle the start of the game */
+        $("#game-start").on("click", function() {
+            /* Hide the start screen */
+            sounds.background.play();
+            $("#game-start").hide();
+            gem.randomize(gameArea);
+            /* Handle the keydown of arrow keys and spacebar */
+            $(document).on("keydown", function(event) {
+
+
+                /* Handle the key down */
+                switch (event.keyCode) {
+                    case 37:
+                        //left
+                        player.move(1)
+                        break;
+                    case 38:
+                        //up
+                        player.move(2)
+                        break;
+                    case 39:
+                        //right
+                        player.move(3)
+                        break;
+                    case 40:
+                        //down
+                        player.move(4)
+                        break;
+                    case 32:
+                        player.speedUp();
+                        break;
+                }
+
+            });
+
+            /* Handle the keyup of arrow keys and spacebar */
+            $(document).on("keyup", function(event) {
+
+                /* Handle the key up */
+                switch (event.keyCode) {
+                    case 37:
+                        //left
+                        player.stop(1)
+                        break;
+                    case 38:
+                        //up
+                        player.stop(2)
+                        break;
+                    case 39:
+                        //right
+                        player.stop(3)
+                        break;
+                    case 40:
+                        //down
+                        player.stop(4)
+                        break;
+                    case 32:
+                        player.slowDown();
+                        break;
+                }
+
+            });
+
+            /* Start the game */
+            requestAnimationFrame(doFrame);
+        });
+    }
     </script>
 </body>
 </html>
