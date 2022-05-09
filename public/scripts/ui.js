@@ -258,7 +258,7 @@ const GamePanel = (() => {
         requestAnimationFrame(doFrame);
     }
 
-    const initialize = function () {
+    const gameStart = function () {
         /* Hide the start screen */
         sounds.background.play().then();
         // $("#game-start").hide();
@@ -320,7 +320,7 @@ const GamePanel = (() => {
         requestAnimationFrame(doFrame);
     }
 
-    return { initialize };
+    return { gameStart };
 })();
 
 //
