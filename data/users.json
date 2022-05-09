@@ -8,5 +8,10 @@
   "name": "Isaac Lee",
   "avatar": "Rabbit Face",
   "password": "$2b$10$fZbmFDsJAouCb6SW4x1THuMULmpWB79RNbVHO3V9m5XhjFXjTT/ty"
+ },
+ "banana": {
+  "name": "banana",
+  "avatar": "Baby Chick 1",
+  "password": "$2b$10$NN/Nw7MYeeApFjssPwLr/eUQZBNXBvBo4eE8wQ.2wvm8XZboff5FC"
  }
 }

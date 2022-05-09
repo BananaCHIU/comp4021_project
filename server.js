@@ -167,14 +167,16 @@ io.on("connection", (socket) => {
             }
         });
         socket.on("remove player", (content) => {
-            if(content.num === 1) {
+            if(content.num === 1 && _.isEqual(content.user, player1)) {
                 player1 = null;
+                io.emit("players", JSON.stringify({1:player1, 2:player2}));
+                io.emit("remove player", JSON.stringify(content));
             }
-            else if(content.num === 2) {
+            else if(content.num === 2 && _.isEqual(content.user, player2)) {
                 player2 = null;
+                io.emit("players", JSON.stringify({1:player1, 2:player2}));
+                io.emit("remove player", JSON.stringify(content));
             }
-            io.emit("players", JSON.stringify({1:player1, 2:player2}));
-            io.emit("remove player", JSON.stringify(content));
         });
         // socket.on("get messages", () => {
         //     // Send the chatroom messages to the browser
