@@ -199,7 +199,7 @@ const GamePanel = (() => {
     // let collectedGems = 0;      // The number of gems collected in the game
 
     /* Create the game area */
-    const gameArea = BoundingBox(context, 165, 60, 420, 800);
+    const gameArea = BoundingBox(context, 165, 60, 740, 1860);
 
     /* Create the sprites in the game */
     const player = Player(context, 427, 240, gameArea); // The player
