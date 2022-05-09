@@ -42,6 +42,7 @@ const Player = function(ctx, x, y, gameArea) {
         speedUp: character.speedUp,
         slowDown: character.slowDown,
         getBoundingBox: character.getBoundingBox,
+        getDirection: character.getDirection,
         draw: character.draw,
         update: character.update
     };

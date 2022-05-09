@@ -97,6 +97,10 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
         sprite.update(time);
     };
 
+    const getDirection = () => {
+      return direction;
+    }
+
     // The methods are returned as an object here.
     return {
         move: move,
@@ -104,6 +108,7 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
         speedUp: speedUp,
         slowDown: slowDown,
         getBoundingBox: sprite.getBoundingBox,
+        getDirection: getDirection,
         draw: sprite.draw,
         update: update
     };
