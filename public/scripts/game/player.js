@@ -13,7 +13,7 @@ const Player = function(ctx, x, y, gameArea) {
         idleLeft:  { x: 0, y: 25, width: 24, height: 25, count: 3, timing: 2000, loop: false },
         idleUp:    { x: 0, y: 50, width: 24, height: 25, count: 1, timing: 2000, loop: false },
         idleRight: { x: 0, y: 75, width: 24, height: 25, count: 3, timing: 2000, loop: false },
-        idleDown:  { x: 0, y:  0, width: 24, height: 25, count: 3, timing: 2000, loop: false },
+        idleDown:  { x: 0, y:  0, width: 112.5, height: 112.5, count: 1, timing: 2000, loop: false },
 
         /* Moving sprite sequences for facing different directions */
         moveLeft:  { x: 0, y: 125, width: 24, height: 25, count: 10, timing: 50, loop: true },

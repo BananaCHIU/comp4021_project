@@ -10,8 +10,7 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
     // The sprite object is configured for the player sprite here.
     sprite.setSequence(sequences.idleDown)
         .setScale(2)
-        .setShadowScale({ x: 0.75, y: 0.20 })
-        .useSheet("character_sprites.png");
+        .useSheet("assets/character_sprites.png");
 
     // This is the moving direction, which can be a number from 0 to 4:
     // - `0` - not moving

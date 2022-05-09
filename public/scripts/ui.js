@@ -176,6 +176,41 @@ const OnlineUsersPanel = (function() {
 
 //Game Panel
 const GamePanel = (() => {
+
+    /* Get the canvas and 2D context */
+    const cv = $("canvas").get(0);
+    const context = cv.getContext("2d");
+
+    /* Create the sounds */
+    const sounds = {
+        background: new Audio("assets/bgm.mp3"),
+        footstep: new Audio("assets/footstep.mp3"),
+        shellDrop: new Audio("assets/shell_drop.mp3"),
+        zombie0: new Audio("assets/zombie_0.mp3"),
+        zombie1: new Audio("assets/zombie_1.mp3"),
+        zombie2: new Audio("assets/zombie_2.mp3"),
+        shoot: new Audio("assets/shoot.mp3"),
+        gameover: new Audio("assets/gameover.mp3")
+    };
+
+    // const totalGameTime = 20;   // Total game time in seconds
+    // const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
+    let gameStartTime = 0;      // The timestamp when the game starts
+    // let collectedGems = 0;      // The number of gems collected in the game
+
+    /* Create the game area */
+    const gameArea = BoundingBox(context, 165, 60, 420, 800);
+
+    /* Create the sprites in the game */
+    const player = Player(context, 427, 240, gameArea); // The player
+    // const gem = Gem(context, 427, 350, "green");        // The gem
+    // const fires = [
+    //     Fire(context, ...gameArea.getPoints().topLeft),
+    //     Fire(context, ...gameArea.getPoints().topRight),
+    //     Fire(context, ...gameArea.getPoints().bottomLeft),
+    //     Fire(context, ...gameArea.getPoints().bottomRight)
+    // ];
+
     const doFrame = (now) => {
         if (gameStartTime == 0) gameStartTime = now;
         /* Update the time remaining */
@@ -223,9 +258,9 @@ const GamePanel = (() => {
         requestAnimationFrame(doFrame);
     }
 
-    const gameStart = async () => {
+    const initialize = function () {
         /* Hide the start screen */
-        await sounds.background.play();
+        sounds.background.play().then();
         // $("#game-start").hide();
         // gem.randomize(gameArea);
         /* Handle the keydown of arrow keys and spacebar */
@@ -285,40 +320,8 @@ const GamePanel = (() => {
         requestAnimationFrame(doFrame);
     }
 
-    /* Get the canvas and 2D context */
-    const cv = $("canvas").get(0);
-    const context = cv.getContext("2d");
-
-    /* Create the sounds */
-    const sounds = {
-        background: new Audio("assets/bgm.mp3"),
-        footstep: new Audio("assets/footstep.mp3"),
-        shellDrop: new Audio("assets/shell_drop.mp3"),
-        zombie0: new Audio("assets/zombie_0.mp3"),
-        zombie1: new Audio("assets/zombie_1.mp3"),
-        zombie2: new Audio("assets/zombie_2.mp3"),
-        shoot: new Audio("assets/shoot.mp3"),
-        gameover: new Audio("assets/gameover.mp3")
-    };
-
-    // const totalGameTime = 20;   // Total game time in seconds
-    // const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
-    let gameStartTime = 0;      // The timestamp when the game starts
-    // let collectedGems = 0;      // The number of gems collected in the game
-
-    /* Create the game area */
-    const gameArea = BoundingBox(context, 165, 60, 420, 800);
-
-    /* Create the sprites in the game */
-    const player = Player(context, 427, 240, gameArea); // The player
-    // const gem = Gem(context, 427, 350, "green");        // The gem
-    // const fires = [
-    //     Fire(context, ...gameArea.getPoints().topLeft),
-    //     Fire(context, ...gameArea.getPoints().topRight),
-    //     Fire(context, ...gameArea.getPoints().bottomLeft),
-    //     Fire(context, ...gameArea.getPoints().bottomRight)
-    // ];
-})
+    return { initialize };
+})();
 
 //
 // const ChatPanel = (function() {
@@ -400,7 +403,7 @@ const UI = (function() {
     };
 
     // The components of the UI are put here
-    const components = [SignInForm, UserPanel, OnlineUsersPanel, GamePanel];
+    const components = [SignInForm, UserPanel, OnlineUsersPanel];
 
     // This function initializes the UI
     const initialize = function() {
