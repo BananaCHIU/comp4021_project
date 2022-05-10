@@ -7,6 +7,11 @@ const SignInForm = (function() {
         // Hide it
         $("#signin-overlay").hide();
 
+        //Description Button onClick Event
+        $("#description-button").on("click", () => {
+            DescriptionPanel.show();
+        });
+
         // Submit event for the signin form
         $("#signin-form").on("submit", (e) => {
             // Do not submit the form
@@ -73,6 +78,30 @@ const SignInForm = (function() {
     };
 
     return { initialize, show, hide };
+})();
+
+const DescriptionPanel = (function () {
+    // This function initializes the UI
+    const initialize = function() {
+        // Hide it
+        $("#description-overlay").hide();
+
+        // Click event for the back button
+        $("#description-back-button").on("click", () => {
+            // Hide description
+            hide();
+        });
+    };
+
+    const show = function() {
+        $("#description-overlay").fadeIn(500);
+    }
+
+    const hide = function() {
+        $("#description-overlay").fadeOut(500);
+    };
+
+    return { initialize, show, hide }
 })();
 
 const UserPanel = (function() {
@@ -285,7 +314,6 @@ const GamePanel = (() => {
                 //is inside game area
                 return true;
             }
-            delete bullet;
             return false;
         }).map((bullet) => {
             bullet.update();
@@ -578,7 +606,7 @@ const UI = (function() {
     };
 
     // The components of the UI are put here
-    const components = [SignInForm, UserPanel, PlayerPairUpPanel];
+    const components = [SignInForm, UserPanel, PlayerPairUpPanel, DescriptionPanel];
 
     // This function initializes the UI
     const initialize = function() {

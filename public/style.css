@@ -60,6 +60,7 @@ body {
 .spacer-0 { width: 0; height: 0; }
 .spacer-1 { width: 5px; height: 5px; }
 .spacer-2 { width: 10px; height: 10px; }
+.spacer-3 { width: 20px; height: 20px; }
 .spacer-grow { flex-grow: 1; }
 
 /* Overlay */
@@ -221,6 +222,16 @@ canvas {
 #edit-user-form {
     width: 270px;
     align-self: stretch;
+}
+/* Description Overlay */
+#desc-title {
+    font-size: 200%;
+}
+#description-overlay p{
+    font-size: 180%;
+}
+#description-overlay span {
+    font-size: 130%;
 }
 
 /* Game Over Overlay */

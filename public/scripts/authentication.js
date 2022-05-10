@@ -97,7 +97,7 @@ const Authentication = (function() {
                 if (onError) onError(json.error);
             })
             .catch((err) => {
-                console.log("Error!");
+                console.log(err);
             });
     };
 

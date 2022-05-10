@@ -25,7 +25,9 @@
         </div>
 
         <div id="game-container">
+            <!--            Game Canvas           -->
             <canvas width="1920px" height="800px"></canvas>
+
             <!--            Game Over Overlay           -->
             <svg xmlns="http://www.w3.org/2000/svg" id="game-over" style="display: none">
                 <defs>
@@ -59,16 +61,20 @@
 
     <div id="signin-overlay" class="overlay row">
         <div class="content shadow row">
-            <form id="signin-form" class="col">
-                <div class="caption">SIGN IN WITH YOUR ACCOUNT</div>
-                <div class="spacer-0"></div>
-                <input id="signin-username" placeholder="Enter your username"></input>
-                <input id="signin-password" type="password" placeholder="Enter your password"></input>
-                <div class="spacer-0"></div>
-                <button type="submit">Sign In</button>
-                <div id="signin-message" class="warning center"></div>
-                <div class="spacer-grow"></div>
-            </form>
+            <div class="col">
+                <form id="signin-form" class="col">
+                    <div class="caption">SIGN IN WITH YOUR ACCOUNT</div>
+                    <div class="spacer-0"></div>
+                    <input id="signin-username" placeholder="Enter your username"></input>
+                    <input id="signin-password" type="password" placeholder="Enter your password"></input>
+                    <div class="spacer-0"></div>
+                    <button type="submit">Sign In</button>
+                    <div id="signin-message" class="warning center"></div>
+                    <div class="spacer-grow"></div>
+                </form>
+                <div class="spacer-3"></div>
+                <button id="description-button" type="button">Description</button>
+            </div>
 
             <div class="spacer-0"></div>
 
@@ -86,6 +92,29 @@
                 <button type="submit">Register</button>
                 <div id="register-message" class="warning center"></div>
             </form>
+        </div>
+    </div>
+
+    <div id="description-overlay" class="overlay col">
+        <div class="content shadow col">
+            <div class="caption" id="desc-title">Description And Instruction</div>
+            <div class="spacer-0"></div>
+            <p class="caption">Description</p>
+            <span class="caption">The world has already ended. Zombies are everywhere.</span>
+            <span class="caption">Now, your team are inside a forest. And they are coming for you.</span>
+            <span class="caption">Protect your people and stay alive. So that you can find your way out.</span>
+            <div class="spacer-0"></div>
+            <p class="caption">Instruction</p>
+            <span class="caption">Character Movement Key:</span>
+            <span class="caption"><tspan>W(Upward), A(Left), S(Downward), D(Right)</tspan></span>
+            <span class="caption">Character Shooting Key: <tspan>SpaceBar</tspan></span>
+            <span class="caption">(Don't hold, 1 shot per press)</span>
+            <span class="caption">Cheat Key: <tspan>C</tspan></span>
+            <span class="caption">(Powerful Attack, You can try to hold that to see what happen)</span>
+            <div class="spacer-0"></div>
+            <button id="description-back-button" type="button">
+                Back
+            </button>
         </div>
     </div>
 
