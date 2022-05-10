@@ -129,6 +129,9 @@ app.get("/signout", (req, res) => {
     res.json({ status: "success" });
 });
 
+app.get("/rank", (req, res) => {
+    res.send(rank);
+});
 
 //
 // ***** Please insert your Lab 6 code here *****
