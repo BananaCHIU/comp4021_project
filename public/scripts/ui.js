@@ -190,6 +190,9 @@ const GamePanel = (() => {
 
     let zombies = new Map();
     let zombieCount = 0;
+    let timerZombieSound;
+    let totalGameTime = 1000 * 60 * 4;
+    let gameStartTime = 0;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -208,9 +211,6 @@ const GamePanel = (() => {
     sounds.background.loop = true;
     sounds.background.volume = 0.3
 
-    let gameStartTime = 0;      // The timestamp when the game starts
-    // let collectedGems = 0;      // The number of gems collected in the game
-
     const initialize = () => {
     }
 
@@ -218,28 +218,33 @@ const GamePanel = (() => {
         if(!gaming) return;
         if (gameStartTime == 0) gameStartTime = now;
         /* Update the time remaining */
-        // const gameTimeSoFar = now - gameStartTime;
-        // const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+        const gameTimeSoFar = now - gameStartTime;
+        const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
         // $("#time-remaining").text(timeRemaining);
         /* Handle the game over situation here */
-        // if(timeRemaining == 0){
-        //     sounds.background.pause();
-        //     sounds.collect.pause();
-        //     sounds.gameover.play();
-        //     $('#game-over').show();
-        //     $('#final-gems').text(collectedGems);
-        //     return;
-        // }
+        if(timeRemaining == 0){
+
+        }
 
         //Game Over
-        if(player.getDead() && anotherPlayer.getDead()){
+        if((timeRemaining == 0) || (player.getDead() && anotherPlayer.getDead())){
             GamePanel.gameOver();
             return;
         }
 
-        bullets.forEach((bullet) => {
+        bullets = bullets.filter((bullet) => {
+            let keep = false;
             const {x, y} = bullet.getXY();
-
+            for(const [key, zombie] of zombies){
+                if(!zombie.getDead() && zombie.getBoundingBox().isPointInBox(x, y)){
+                    //hit zombie
+                    zombie.die();
+                    keep = false;
+                    break;
+                }
+                keep = true;
+            }
+            return keep;
         });
 
         zombies.forEach((zombie, key) => {
@@ -258,7 +263,9 @@ const GamePanel = (() => {
                 }
             }
             else {
-                zombies.delete(key);
+                setTimeout(() => {
+                    zombies.delete(key);
+                }, 1000);
             }
         });
 
@@ -281,17 +288,6 @@ const GamePanel = (() => {
             zombie.update(now, player, anotherPlayer);
         })
 
-        /* Randomize the gem and collect the gem here */
-        // if(gem.getAge(now) >= gemMaxAge){
-        //     gem.randomize(gameArea);
-        // }
-        // if(player.getBoundingBox().isPointInBox(gem.getXY().x, gem.getXY().y)){
-        //     sounds.collect.currentTime = 0;
-        //     sounds.collect.play();
-        //     collectedGems++;
-        //     gem.randomize(gameArea);
-        // }
-
         /* Clear the screen */
         context.clearRect(0, 0, cv.width, cv.height);
 
@@ -307,6 +303,12 @@ const GamePanel = (() => {
 
         /* Process the next frame */
         requestAnimationFrame(doFrame);
+    }
+
+    const zombiePlaySound = () => {
+        let num = Math.floor(Math.random() * (2 + 1));
+        sounds[`zombie${num}`].play();
+        timerZombieSound = setTimeout(zombiePlaySound, Math.floor(Math.random() * (10000 - 0 + 1) + 0));
     }
 
     const gameStart = function (me, another) {
@@ -325,11 +327,10 @@ const GamePanel = (() => {
             player = new Player(context, player2XY.x, player2XY.y, gameArea, me.num); // The player
             anotherPlayer = new Player(context, player1XY.x, player1XY.y, gameArea, another.num); // Another player
         }
-        /* Hide the start screen */
-        sounds.background.play();
 
-        // $("#game-start").hide();
-        // gem.randomize(gameArea);
+        sounds.background.play();
+        zombiePlaySound();
+
         /* Handle the keydown of arrow keys and spacebar */
         $(document).on("keydown", keyDown);
 
@@ -345,6 +346,7 @@ const GamePanel = (() => {
     const gameOver = () => {
         gaming = false;
         context.clearRect(0,0,cv.width,cv.height);
+        clearTimeout(timerZombieSound);
         sounds.footstep.pause();
         sounds.background.pause();
     }
@@ -353,9 +355,11 @@ const GamePanel = (() => {
         setInterval(() => {
             const randomXY = gameArea.randomPoint();
             const zomNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
-            zombies.set(zombieCount, Zombie(context, randomXY.x, randomXY.y, gameArea, zomNum))
+            const spawnSide = Math.round(Math.random() + 0.1);
+            const randomX = [60, gameArea.getRight() - gameArea.getLeft()]
+            zombies.set(zombieCount, Zombie(context, randomX[spawnSide], randomXY.y, gameArea, zomNum))
             zombieCount++;
-            Socket.zombieSpawned(randomXY, zomNum);
+            Socket.zombieSpawned({x:randomX[spawnSide], y: randomXY.y}, zomNum);
         }, 1000)
     }
 
@@ -500,76 +504,6 @@ const GamePanel = (() => {
 
     return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie };
 })();
-
-//
-// const ChatPanel = (function() {
-// 	// This stores the chat area
-//     let chatArea = null;
-//     let timer = null;
-//     // This function initializes the UI
-//     const initialize = function() {
-// 		// Set up the chat area
-// 		chatArea = $("#chat-area");
-//
-//         // Submit event for the input form
-//         $("#chat-input-form").on("submit", (e) => {
-//             // Do not submit the form
-//             e.preventDefault();
-//
-//             // Get the message content
-//             const content = $("#chat-input").val().trim();
-//
-//             // Post it
-//             Socket.postMessage(content);
-//
-// 			// Clear the message
-//             $("#chat-input").val("");
-//         });
-//
-//         $("#chat-input-form").on("keydown", (e) => {
-//             Socket.postTyping($("#user-panel .user-name").html());
-//         })
-//  	};
-//
-//     // This function updates the chatroom area
-//     const update = function(chatroom) {
-//         // Clear the online users area
-//         chatArea.empty();
-//
-//         // Add the chat message one-by-one
-//         for (const message of chatroom) {
-// 			addMessage(message);
-//         }
-//     };
-//
-//     // This function adds a new message at the end of the chatroom
-//     const addMessage = function(message) {
-// 		const datetime = new Date(message.datetime);
-// 		const datetimeString = datetime.toLocaleDateString() + " " +
-// 							   datetime.toLocaleTimeString();
-//
-// 		chatArea.append(
-// 			$("<div class='chat-message-panel row'></div>")
-// 				.append(UI.getUserDisplay(message.user))
-// 				.append($("<div class='chat-message col'></div>")
-// 					.append($("<div class='chat-date'>" + datetimeString + "</div>"))
-// 					.append($("<div class='chat-content'>" + message.content + "</div>"))
-// 				)
-// 		);
-// 		chatArea.scrollTop(chatArea[0].scrollHeight);
-//     };
-//
-//     const addTyping = function (name) {
-//         if(name === $("#user-panel .user-name").html()) return;
-//         clearTimeout(timer);
-//         timer = setTimeout(() => {
-//             $("#chat-typing").html("");
-//         }, 3000)
-//         $("#chat-typing").html(`${name} is typing...`);
-//     }
-//
-//     return { initialize, update, addMessage, addTyping };
-// })();
 
 const UI = (function() {
     // This function gets the user display

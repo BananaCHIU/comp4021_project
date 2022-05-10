@@ -85,7 +85,7 @@ const Zombie = function(ctx, x, y, gameArea, zomNum = 0) {
         const player2XY = player2.getBoundingBox().getCenter();
         const distance1 = Math.sqrt((player1XY.x - x)**2 + (player1XY.y - y)**2)
         const distance2 = Math.sqrt((player2XY.x - x)**2 + (player2XY.y - y)**2)
-        return distance1 <= distance2 ? (isNaN(player1XY.x) ? player2XY : player1XY) : (isNaN(player2XY.x) ? player1XY : player2XY)
+        return distance1 <= distance2 ? (player1.getDead() ? player2XY : player1XY) : (player2.getDead() ? player1XY : player2XY)
     }
 
     //calculate angle towards the target of the zombie
@@ -97,19 +97,21 @@ const Zombie = function(ctx, x, y, gameArea, zomNum = 0) {
     }
 
     const move = (angle) => {
-        let direction;
-        const pi = Math.PI;
+        if(!dead){
+            let direction;
+            const pi = Math.PI;
 
-        if(angle <= (-11)*pi/12 || angle >= 11*pi/12) direction = 1;
-        else if(angle <= (-7)*pi/12 && angle >= (-11)*pi/12) direction = 2;
-        else if(angle <= (-5)*pi/12 && angle >= (-7)*pi/12) direction = 3;
-        else if(angle <= (-1)*pi/12 && angle >= (-5)*pi/12) direction = 4;
-        else if(angle <= (1)*pi/12 && angle >= (-1)*pi/12) direction = 5;
-        else if(angle <= (5)*pi/12 && angle >= (1)*pi/12) direction = 6;
-        else if(angle <= (7)*pi/12 && angle >= (5)*pi/12) direction = 7;
-        else if(angle <= (11)*pi/12 && angle >= (7)*pi/12) direction = 8;
+            if(angle <= (-11)*pi/12 || angle >= 11*pi/12) direction = 1;
+            else if(angle <= (-7)*pi/12 && angle >= (-11)*pi/12) direction = 2;
+            else if(angle <= (-5)*pi/12 && angle >= (-7)*pi/12) direction = 3;
+            else if(angle <= (-1)*pi/12 && angle >= (-5)*pi/12) direction = 4;
+            else if(angle <= (1)*pi/12 && angle >= (-1)*pi/12) direction = 5;
+            else if(angle <= (5)*pi/12 && angle >= (1)*pi/12) direction = 6;
+            else if(angle <= (7)*pi/12 && angle >= (5)*pi/12) direction = 7;
+            else if(angle <= (11)*pi/12 && angle >= (7)*pi/12) direction = 8;
 
-        character.move(direction);
+            character.move(direction);
+        }
     }
 
     const update = (time, player1, player2) => {
@@ -129,7 +131,7 @@ const Zombie = function(ctx, x, y, gameArea, zomNum = 0) {
 
     const die = () => {
         dead = true;
-        character.stop();
+        speed = 0;
         character.setSequence(Object.values(dieSequences[zombieNum])[character.getDirection()-1]);
     }
 
