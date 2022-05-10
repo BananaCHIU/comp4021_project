@@ -117,5 +117,9 @@ const Socket = (function() {
         }
     }
 
+    const gameOvered = () => {
+        //TODO: Signal server GameOver, clear all Player
+    }
+
     return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove, zombieSpawned };
 })();

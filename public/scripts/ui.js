@@ -182,17 +182,19 @@ const GamePanel = (() => {
 
     let gaming = false;
     let gameArea, player, anotherPlayer;
-    let bullets = [];
     let keys = {};
     let prevWalking = false;
     let walking = false;
     let fired = false;
 
+    let bullets = [];
     let zombies = new Map();
     let zombieCount = 0;
     let timerZombieSound;
     let totalGameTime = 1000 * 60 * 4;
     let gameStartTime = 0;
+
+    let zombieSpawnTimer = null;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -206,10 +208,11 @@ const GamePanel = (() => {
     };
 
     sounds.footstep.loop = true;
-    sounds.footstep.volume = 0.3;
-    sounds.shoot.volume = 0.1;
     sounds.background.loop = true;
+    sounds.footstep.volume = 0.3;
     sounds.background.volume = 0.3
+    sounds.shoot.volume = 0.1;
+    sounds.gameover.volume = 0.1;
 
     const initialize = () => {
     }
@@ -303,6 +306,7 @@ const GamePanel = (() => {
 
     const zombiePlaySound = () => {
         let num = Math.floor(Math.random() * (2 + 1));
+        sounds[`zombie${num}`].volume = 0.2;
         sounds[`zombie${num}`].play();
         timerZombieSound = setTimeout(zombiePlaySound, Math.floor(Math.random() * (10000 - 0 + 1) + 0));
     }
@@ -333,7 +337,10 @@ const GamePanel = (() => {
         /* Handle the keyup of arrow keys and spacebar */
         $(document).on("keyup", keyUp);
 
-        spawnZombie();
+        bullets = [];
+        zombies = new Map();
+        zombieCount = 0;
+        zombieSpawnTimer = spawnZombie();
 
         /* Start the game */
         requestAnimationFrame(doFrame);
@@ -343,16 +350,32 @@ const GamePanel = (() => {
         gaming = false;
         context.clearRect(0,0,cv.width,cv.height);
         clearTimeout(timerZombieSound);
-        sounds.footstep.pause();
-        sounds.background.pause();
+        for(const [key, sound] of Object.entries(sounds)) {
+            sound.pause();
+        }
+
+        //reset states
+        bullets = [];
+        zombies = new Map();
+        zombieCount = 0;
+        clearInterval(zombieSpawnTimer);
+        prevWalking = false;
+        walking = false;
+        fired = false;
+
+        //show game-over
+        sounds.gameover.currentTime = 2.5;
+        sounds.gameover.play();
+        $("#game-over").show();
+        console.log('game-over')
     }
 
     const spawnZombie = () => {
-        setInterval(() => {
+        return setInterval(() => {
             const randomXY = gameArea.randomPoint();
             const zomNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
             const spawnSide = Math.round(Math.random() + 0.1);
-            const randomX = [60, gameArea.getRight() - gameArea.getLeft()]
+            const randomX = [60, gameArea.getRight() - gameArea.getLeft()];
             zombies.set(zombieCount, Zombie(context, randomX[spawnSide], randomXY.y, gameArea, zomNum))
             zombieCount++;
             Socket.zombieSpawned({x:randomX[spawnSide], y: randomXY.y}, zomNum);
