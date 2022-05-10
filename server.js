@@ -232,6 +232,8 @@ io.on("connection", (socket) => {
                 rank.sort(compare);
                 rank = rank.slice(0, 5);
             }
+            player1 = null;
+            player2 = null;
             console.log(rank);
         })
     }
