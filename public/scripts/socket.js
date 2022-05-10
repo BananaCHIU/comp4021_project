@@ -52,7 +52,17 @@ const Socket = (function() {
             }
         });
 
+        socket.on("spawn zombie", (XY) => {
+            XY = JSON.parse(XY);
+            console.log(XY);
+            if(XY.user.name !== Authentication.getUser().name){
+                GamePanel.anotherSpawnZombie(XY.x, XY.y);
+            }
+
+        })
+
         socket.on("game start", (onlinePlayers) => {
+            onlinePlayers = JSON.parse(onlinePlayers);
             if(onlinePlayers[1] !== null && onlinePlayers[2] !== null){
                 //Game Start
                 let me = Authentication.getUser();
@@ -101,5 +111,12 @@ const Socket = (function() {
             socket.emit("shoot player", {user: Authentication.getUser()});
         }
     }
-    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove };
+
+    const zombieSpawned = (XY) => {
+        if (socket && socket.connected) {
+            socket.emit("zombie spawned", {...XY, user: Authentication.getUser()});
+        }
+    }
+
+    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove, zombieSpawned };
 })();

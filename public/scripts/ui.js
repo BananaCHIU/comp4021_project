@@ -231,6 +231,31 @@ const GamePanel = (() => {
         //     return;
         // }
 
+        //Game Over
+        if(player.getDead() && anotherPlayer.getDead()){
+            GamePanel.gameOver();
+            return;
+        }
+        zombies.forEach((zombie, key) => {
+            if(!zombie.getDead()){
+                const pos = zombie.getXY();
+                if(!player.dead && player.getBoundingBox().isPointInBox(pos.x, pos.y)){
+                    //zombie touch player
+                    walking = false;
+                    player.die();
+                    $(document).off('keyup');
+                    $(document).off('keydown');
+                    $(document).off('keypress');
+                }else if(!anotherPlayer.dead && anotherPlayer.getBoundingBox().isPointInBox(pos.x, pos.y)){
+                    //zombie touch another player
+                    anotherPlayer.die();
+                }
+            }
+            else {
+                zombies.delete(key);
+            }
+        })
+
         /* Update the sprites */
         player.update(now);
         anotherPlayer.update(now);
@@ -252,29 +277,6 @@ const GamePanel = (() => {
         //     gem.randomize(gameArea);
         // }
 
-        //Game Over
-        if(player.getDead() && anotherPlayer.getDead()){
-            GamePanel.gameOver();
-            return;
-        }
-        zombies.forEach((zombie, key) => {
-            if(!zombie.getDead()){
-                const pos = zombie.getXY();
-                if(!player.dead && player.getBoundingBox().isPointInBox(pos.x, pos.y)){
-                    //zombie touch player
-                    walking = false;
-                    player.die();
-                    $(document).off('keyup');
-                    $(document).off('keydown');
-                    $(document).off('keypress');
-                }else if(!anotherPlayer.dead && anotherPlayer.getBoundingBox().isPointInBox(pos.x, pos.y)){
-                    //zombie touch another player
-                    anotherPlayer.die();
-                }
-            }
-        })
-
-
         /* Clear the screen */
         context.clearRect(0, 0, cv.width, cv.height);
 
@@ -293,6 +295,7 @@ const GamePanel = (() => {
     }
 
     const gameStart = function (me, another) {
+        console.log(me.num, another.num)
         const player1XY = { x: 427, y: 240 }
         const player2XY = { x: 727, y: 240 }
         gaming = true;
@@ -337,7 +340,13 @@ const GamePanel = (() => {
             const randomXY = gameArea.randomPoint();
             zombies.set(zombieCount, Zombie(context, randomXY.x, randomXY.y, gameArea))
             zombieCount++;
+            Socket.zombieSpawned(randomXY);
         }, 1000)
+    }
+
+    const anotherSpawnZombie = (x, y) => {
+        zombies.set(zombieCount, Zombie(context, x, y, gameArea))
+        zombieCount++;
     }
 
     const keyUp = (event) => {
@@ -474,7 +483,7 @@ const GamePanel = (() => {
         }, 200)
     }
 
-    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot };
+    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie };
 })();
 
 //
