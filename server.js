@@ -222,10 +222,16 @@ io.on("connection", (socket) => {
             io.emit("spawn zombie", JSON.stringify(content));
         })
         socket.on("game over", (content) => {
-            const {user, score} = content;
-            rank.push({player: user, score});
-            rank.sort(compare);
-            rank = rank.slice(0, 5);
+            const obj = {player: content.user, score: content.score};
+            let skip = false;
+            rank.forEach((player) => {
+                if(_.isEqual(player, obj)) skip = true;
+            })
+            if(!skip){
+                rank.push();
+                rank.sort(compare);
+                rank = rank.slice(0, 5);
+            }
             console.log(rank);
         })
     }
