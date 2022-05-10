@@ -295,12 +295,11 @@ const GamePanel = (() => {
     }
 
     const gameStart = function (me, another) {
-        console.log(me.num, another.num)
         const player1XY = { x: 427, y: 240 }
         const player2XY = { x: 727, y: 240 }
         gaming = true;
         /* Create the game area */
-        gameArea = BoundingBox(context, 165, 60, 740, 1860);
+        gameArea = new BoundingBox(context, 165, 60, 740, 1860);
 
         /* Create the sprites in the game */
         if(me.num === 1) {

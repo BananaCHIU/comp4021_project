@@ -54,7 +54,6 @@ const Socket = (function() {
 
         socket.on("spawn zombie", (XY) => {
             XY = JSON.parse(XY);
-            console.log(XY);
             if(XY.user.name !== Authentication.getUser().name){
                 GamePanel.anotherSpawnZombie(XY.x, XY.y);
             }

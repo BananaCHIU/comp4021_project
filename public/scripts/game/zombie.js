@@ -85,8 +85,7 @@ const Zombie = function(ctx, x, y, gameArea) {
         const player2XY = player2.getBoundingBox().getCenter();
         const distance1 = Math.sqrt((player1XY.x - x)**2 + (player1XY.y - y)**2)
         const distance2 = Math.sqrt((player2XY.x - x)**2 + (player2XY.y - y)**2)
-        // console.log(typeof player1XY.x, typeof x)
-        return distance1 <= distance2 ? player1XY : player2XY
+        return distance1 <= distance2 ? (isNaN(player1XY.x) ? player2XY : player1XY) : (isNaN(player2XY.x) ? player1XY : player2XY)
     }
 
     //calculate angle towards the target of the zombie
