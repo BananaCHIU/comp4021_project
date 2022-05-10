@@ -153,6 +153,16 @@ io.on("connection", (socket) => {
         socket.on("disconnect", () => {
             // Remove the user from the online user list
             delete onlineUsers[username];
+            if(_.isEqual(socket.request.session.user, player1)) {
+                player1 = null;
+                io.emit("players", JSON.stringify({1:player1, 2:player2}));
+                io.emit("remove player", JSON.stringify({user: socket.request.session.user, num: 1}));
+            }
+            else if(_.isEqual(socket.request.session.user, player2)) {
+                player2 = null;
+                io.emit("players", JSON.stringify({1:player1, 2:player2}));
+                io.emit("remove player", JSON.stringify({user: socket.request.session.user, num: 2}));
+            }
         });
         socket.on("add player", (content) => {
             if(content.num === 1 && !_.isEqual(content.user, player2)) {

@@ -202,6 +202,10 @@ const GamePanel = (() => {
     let keys = {};
     let prevWalking = false;
     let walking = false;
+    let fired = false;
+
+    let zombies = new Map();
+    let zombieCount = 0;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -216,8 +220,9 @@ const GamePanel = (() => {
 
     sounds.footstep.loop = true;
     sounds.footstep.volume = 0.3;
-    sounds.shoot.volume = 0.2;
+    sounds.shoot.volume = 0.1;
     sounds.background.loop = true;
+    sounds.background.volume = 0.3
 
     let gameStartTime = 0;      // The timestamp when the game starts
     // let collectedGems = 0;      // The number of gems collected in the game
@@ -243,14 +248,13 @@ const GamePanel = (() => {
         // }
 
         /* Update the sprites */
-        // gem.update(now);
         player.update(now);
         anotherPlayer.update(now);
-        // fires.forEach((fire) => {
-        //     fire.update(now)
-        // })
         bullets.forEach((bullet) => {
             bullet.update();
+        })
+        zombies.forEach((zombie, key) => {
+            zombie.update(now, player, anotherPlayer);
         })
 
         /* Randomize the gem and collect the gem here */
@@ -268,14 +272,13 @@ const GamePanel = (() => {
         context.clearRect(0, 0, cv.width, cv.height);
 
         /* Draw the sprites */
-        // gem.draw();
         player.draw();
         anotherPlayer.draw();
-        // fires.forEach((fire) => {
-        //     fire.draw()
-        // })
         bullets.forEach((bullet) => {
             bullet.draw();
+        })
+        zombies.forEach((zombie, key) => {
+            zombie.draw();
         })
 
         /* Process the next frame */
@@ -285,13 +288,21 @@ const GamePanel = (() => {
     const gameStart = function (me, another) {
         console.log(me.num);
         console.log(another.num);
+        const player1XY = { x: 427, y: 240 }
+        const player2XY = { x: 727, y: 240 }
         gaming = true;
         /* Create the game area */
         gameArea = BoundingBox(context, 165, 60, 740, 1860);
 
         /* Create the sprites in the game */
-        player = new Player(context, 427, 240, gameArea, me.num); // The player
-        anotherPlayer = new Player(context, 727, 240, gameArea, another.num); // Another player
+        if(me.num === 1) {
+            player = new Player(context, player1XY.x, player1XY.y, gameArea, me.num); // The player
+            anotherPlayer = new Player(context, player2XY.x, player2XY.y, gameArea, another.num); // Another player
+        }
+        else {
+            player = new Player(context, player2XY.x, player2XY.y, gameArea, me.num); // The player
+            anotherPlayer = new Player(context, player1XY.x, player1XY.y, gameArea, another.num); // Another player
+        }
         /* Hide the start screen */
         sounds.background.play();
 
@@ -303,18 +314,7 @@ const GamePanel = (() => {
         /* Handle the keyup of arrow keys and spacebar */
         $(document).on("keyup", keyUp);
 
-        $(document).on("keypress", () => {
-            if(keys[32]){
-                bullets.push(Projectile(context, player, gameArea));
-                sounds.shoot.currentTime = 0;
-                sounds.shoot.play();
-                setTimeout(() => {
-                    sounds.shellDrop.currentTime = 0;
-                    sounds.shellDrop.play();
-                }, 200)
-                Socket.playerShoot();
-            }
-        });
+        spawnZombie();
 
         /* Start the game */
         requestAnimationFrame(doFrame);
@@ -327,6 +327,14 @@ const GamePanel = (() => {
         context.clearRect(0,0,cv.width,cv.height);
         sounds.footstep.pause();
         sounds.background.pause();
+    }
+
+    const spawnZombie = () => {
+        setInterval(() => {
+            const randomXY = gameArea.randomPoint();
+            zombies.set(zombieCount, Zombie(context, randomXY.x, randomXY.y, gameArea))
+            zombieCount++;
+        }, 1000)
     }
 
     const keyUp = (event) => {
@@ -370,6 +378,9 @@ const GamePanel = (() => {
             player.stop();
             Socket.playerMove(0);
         }
+        if(!keys[32]) {
+            fired = false;
+        }
         if(walking !== prevWalking){
             prevWalking = false;
             sounds.footstep.pause();
@@ -412,6 +423,19 @@ const GamePanel = (() => {
             walking = true;
             player.move(8);
             Socket.playerMove(8);
+        }
+        if(keys[32]){
+            if(!fired) {
+                bullets.push(Projectile(context, player, gameArea));
+                sounds.shoot.currentTime = 0;
+                sounds.shoot.play();
+                setTimeout(() => {
+                    sounds.shellDrop.currentTime = 0;
+                    sounds.shellDrop.play();
+                }, 200)
+                Socket.playerShoot();
+                fired = true;
+            }
         }
         if(prevWalking !== walking){
             sounds.footstep.play();
