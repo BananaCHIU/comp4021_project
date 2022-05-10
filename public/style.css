@@ -222,3 +222,20 @@ canvas {
     width: 270px;
     align-self: stretch;
 }
+
+/* Game Over Overlay */
+#game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid gray;
+    width: 1920px;
+    height: 800px;
+    background: rgba(1, 1, 1, 0.8);
+}
+#game-over text {
+    font-size: 1200%;
+    fill: url(#game-over-fill);
+    text-anchor: middle;
+    white-space: pre-line;
+}

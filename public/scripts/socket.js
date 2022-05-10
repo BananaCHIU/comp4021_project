@@ -52,6 +52,13 @@ const Socket = (function() {
             }
         });
 
+        socket.on("cheat shoot", (content) => {
+            content = JSON.parse(content);
+            if(content.user.name !== Authentication.getUser().name){
+                GamePanel.anotherPlayerCheatShoot();
+            }
+        });
+
         socket.on("spawn zombie", (content) => {
             content = JSON.parse(content);
             if(content.user.name !== Authentication.getUser().name){
@@ -111,11 +118,21 @@ const Socket = (function() {
         }
     }
 
+    const playerCheatShoot = () => {
+        if (socket && socket.connected) {
+            socket.emit("cheat shoot player", {user: Authentication.getUser()});
+        }
+    }
+
     const zombieSpawned = (XY, zomNum) => {
         if (socket && socket.connected) {
             socket.emit("zombie spawned", {XY, zomNum, user: Authentication.getUser()});
         }
     }
 
-    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove, zombieSpawned };
+    const gameOvered = () => {
+        //TODO: Signal server GameOver, clear all Player
+    }
+
+    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove, zombieSpawned, playerCheatShoot };
 })();

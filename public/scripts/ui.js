@@ -197,6 +197,8 @@ const GamePanel = (() => {
     let myScore = 0;
     let myPlayerNum;
 
+    let zombieSpawnTimer = null;
+
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
         footstep: new Audio("assets/footstep.mp3"),
@@ -209,10 +211,11 @@ const GamePanel = (() => {
     };
 
     sounds.footstep.loop = true;
-    sounds.footstep.volume = 0.3;
-    sounds.shoot.volume = 0.1;
     sounds.background.loop = true;
+    sounds.footstep.volume = 0.3;
     sounds.background.volume = 0.3
+    sounds.shoot.volume = 0.1;
+    sounds.gameover.volume = 0.1;
 
     const initialize = () => {
     }
@@ -311,6 +314,7 @@ const GamePanel = (() => {
 
     const zombiePlaySound = () => {
         let num = Math.floor(Math.random() * (2 + 1));
+        sounds[`zombie${num}`].volume = 0.2;
         sounds[`zombie${num}`].play();
         timerZombieSound = setTimeout(zombiePlaySound, Math.floor(Math.random() * (10000 - 0 + 1) + 0));
     }
@@ -345,7 +349,10 @@ const GamePanel = (() => {
         /* Handle the keyup of arrow keys and spacebar */
         $(document).on("keyup", keyUp);
 
-        spawnZombie();
+        bullets = [];
+        zombies = new Map();
+        zombieCount = 0;
+        zombieSpawnTimer = spawnZombie();
 
         /* Start the game */
         requestAnimationFrame(doFrame);
@@ -357,8 +364,24 @@ const GamePanel = (() => {
         $("#user-panel .user-name").text(Authentication.getUser().name);
         context.clearRect(0,0,cv.width,cv.height);
         clearTimeout(timerZombieSound);
-        sounds.footstep.pause();
-        sounds.background.pause();
+        for(const [key, sound] of Object.entries(sounds)) {
+            sound.pause();
+        }
+
+        //reset states
+        bullets = [];
+        zombies = new Map();
+        zombieCount = 0;
+        clearInterval(zombieSpawnTimer);
+        prevWalking = false;
+        walking = false;
+        fired = false;
+
+        //show game-over
+        sounds.gameover.currentTime = 2.5;
+        sounds.gameover.play();
+        $("#game-over").show();
+        console.log('game-over')
     }
 
     const getMyScore = () => {
@@ -366,11 +389,11 @@ const GamePanel = (() => {
     }
 
     const spawnZombie = () => {
-        setInterval(() => {
+        return setInterval(() => {
             const randomXY = gameArea.randomPoint();
             const zomNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
             const spawnSide = Math.round(Math.random() + 0.1);
-            const randomX = [60, gameArea.getRight() - gameArea.getLeft()]
+            const randomX = [60, gameArea.getRight() - gameArea.getLeft()];
             zombies.set(zombieCount, Zombie(context, randomX[spawnSide], randomXY.y, gameArea, zomNum))
             zombieCount++;
             Socket.zombieSpawned({x:randomX[spawnSide], y: randomXY.y}, zomNum);
@@ -482,6 +505,19 @@ const GamePanel = (() => {
                 fired = true;
             }
         }
+        //Cheat Key: Maximum Bullet Rate
+        if(keys[67]) {
+            for(let i = 1; i <= 8; i++) {
+                bullets.push(Projectile(context, player, gameArea, i));
+            }
+            sounds.shoot.currentTime = 0;
+            sounds.shoot.play();
+            setTimeout(() => {
+                sounds.shellDrop.currentTime = 0;
+                sounds.shellDrop.play();
+            }, 200)
+            Socket.playerCheatShoot();
+        }
         if(prevWalking !== walking){
             sounds.footstep.play();
             prevWalking = true;
@@ -516,7 +552,20 @@ const GamePanel = (() => {
         }, 200)
     }
 
-    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie, getMyScore };
+    const anotherPlayerCheatShoot = () => {
+        console.log('another cheat')
+        for(let i = 1; i <= 8; i++) {
+            bullets.push(Projectile(context, anotherPlayer, gameArea, i));
+        }
+        sounds.shoot.currentTime = 0;
+        sounds.shoot.play();
+        setTimeout(() => {
+            sounds.shellDrop.currentTime = 0;
+            sounds.shellDrop.play();
+        }, 200)
+    }
+
+    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie, anotherPlayerCheatShoot, getMyScore };
 })();
 
 const UI = (function() {
