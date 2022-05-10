@@ -129,12 +129,26 @@ const PlayerPairUpPanel = (function() {
 
     const update = function(players) {
         onlinePlayers = players;
-        console.log('update')
         for(const num in onlinePlayers) {
             if(onlinePlayers[num]) {
-                console.log(num)
                 $(`#player${num}-pair .player${num}-avatar`).html(Avatar.getCode(onlinePlayers[num].avatar));
                 $(`#player${num}-pair .player${num}-name`).text(onlinePlayers[num].name);
+            }
+        }
+        if(onlinePlayers[1] !== null && onlinePlayers[2] !== null){
+            //Game Start
+            let me = Authentication.getUser();
+            if(me.name === onlinePlayers[1].name){
+                GamePanel.gameStart({num: 1, player: onlinePlayers[1]}, {num: 2, player: onlinePlayers[2]});
+            }else{
+                GamePanel.gameStart({num: 2, player: onlinePlayers[2]}, {num: 1, player: onlinePlayers[1]});
+            }
+            $("#pair-up-overlay").hide();
+            for(const num in onlinePlayers) {
+                if(onlinePlayers[num]) {
+                    $(`#player${num}-pair .player${num}-avatar`).html("");
+                    $(`#player${num}-pair .player${num}-name`).text("");
+                }
             }
         }
     };
@@ -183,9 +197,11 @@ const GamePanel = (() => {
     const context = cv.getContext("2d");
 
     let gaming = false;
-    let gameArea, player;
+    let gameArea, player, anotherPlayer;
     let bullets = [];
-    let fired = false;
+    let keys = {};
+    let prevWalking = false;
+    let walking = false;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -229,6 +245,7 @@ const GamePanel = (() => {
         /* Update the sprites */
         // gem.update(now);
         player.update(now);
+        anotherPlayer.update(now);
         // fires.forEach((fire) => {
         //     fire.update(now)
         // })
@@ -253,6 +270,7 @@ const GamePanel = (() => {
         /* Draw the sprites */
         // gem.draw();
         player.draw();
+        anotherPlayer.draw();
         // fires.forEach((fire) => {
         //     fire.draw()
         // })
@@ -264,52 +282,29 @@ const GamePanel = (() => {
         requestAnimationFrame(doFrame);
     }
 
-    const gameStart = function () {
+    const gameStart = function (me, another) {
+        console.log(me.num);
+        console.log(another.num);
         gaming = true;
         /* Create the game area */
         gameArea = BoundingBox(context, 165, 60, 740, 1860);
 
         /* Create the sprites in the game */
-        player = Player(context, 427, 240, gameArea); // The player
-
+        player = new Player(context, 427, 240, gameArea, me.num); // The player
+        anotherPlayer = new Player(context, 727, 240, gameArea, another.num); // Another player
         /* Hide the start screen */
         sounds.background.play();
-
-        let keys = {};
-        let prevWalking = false;
+        
         // $("#game-start").hide();
         // gem.randomize(gameArea);
         /* Handle the keydown of arrow keys and spacebar */
-        $(document).on("keydown", function(event) {
-            /* Handle the key down */
-            let walking = prevWalking;
-            keys[event.keyCode] = true;
-            if(keys[65] && !keys[87] && !keys[68] && !keys[83]){
-                walking = true;
-                player.move(1);
-            }else if(keys[65] && keys[87] && !keys[68] && !keys[83]){
-                walking = true;
-                player.move(2);
-            }else if(!keys[65] && keys[87] && !keys[68] && !keys[83]){
-                walking = true;
-                player.move(3);
-            }else if(!keys[65] && keys[87] && keys[68] && !keys[83]){
-                walking = true;
-                player.move(4);
-            }else if(!keys[65] && !keys[87] && keys[68] && !keys[83]){
-                walking = true;
-                player.move(5);
-            }else if(!keys[65] && !keys[87] && keys[68] && keys[83]){
-                walking = true;
-                player.move(6);
-            }else if(!keys[65] && !keys[87] && !keys[68] && keys[83]){
-                walking = true;
-                player.move(7);
-            }else if(keys[65] && !keys[87] && !keys[68] && keys[83]){
-                walking = true;
-                player.move(8);
-            }
-            if(keys[32] && !fired){
+        $(document).on("keydown", keyDown);
+
+        /* Handle the keyup of arrow keys and spacebar */
+        $(document).on("keyup", keyUp);
+
+        $(document).on("keypress", () => {
+            if(keys[32]){
                 bullets.push(Projectile(context, player, gameArea));
                 sounds.shoot.currentTime = 0;
                 sounds.shoot.play();
@@ -317,100 +312,10 @@ const GamePanel = (() => {
                     sounds.shellDrop.currentTime = 0;
                     sounds.shellDrop.play();
                 }, 200)
-
-                fired = true;
+                Socket.playerShoot();
             }
-            if(prevWalking !== walking){
-                sounds.footstep.play();
-                prevWalking = true;
-            }
-            // switch (event.keyCode) {
-            //     case 65:
-            //         //left
-            //         player.move(1)
-            //         break;
-            //     case 87:
-            //         //up
-            //         player.move(2)
-            //         break;
-            //     case 68:
-            //         //right
-            //         player.move(3)
-            //         break;
-            //     case 83:
-            //         //down
-            //         player.move(4)
-            //         break;
-            //     case 32:
-            //         player.speedUp();
-            //         break;
-            // }
-
         });
-
-        /* Handle the keyup of arrow keys and spacebar */
-        $(document).on("keyup", function(event) {
-            // /* Handle the key up */
-            let walking = prevWalking;
-            keys[event.keyCode] = false;
-            if(keys[65] && !keys[87] && !keys[68] && !keys[83]){
-                walking = true;
-                player.move(1);
-            }else if(keys[65] && keys[87] && !keys[68] && !keys[83]){
-                walking = true;
-                player.move(2);
-            }else if(!keys[65] && keys[87] && !keys[68] && !keys[83]){
-                walking = true;
-                player.move(3);
-            }else if(!keys[65] && keys[87] && keys[68] && !keys[83]){
-                walking = true;
-                player.move(4);
-            }else if(!keys[65] && !keys[87] && keys[68] && !keys[83]){
-                walking = true;
-                player.move(5);
-            }else if(!keys[65] && !keys[87] && keys[68] && keys[83]){
-                walking = true;
-                player.move(6);
-            }else if(!keys[65] && !keys[87] && !keys[68] && keys[83]){
-                walking = true;
-                player.move(7);
-            }else if(keys[65] && !keys[87] && !keys[68] && keys[83]){
-                walking = true;
-                player.move(8);
-            }else{
-                walking = false;
-                player.stop();
-            }
-            if(!keys[32]) {
-                fired = false;
-            }
-            if(walking !== prevWalking){
-                prevWalking = false;
-                sounds.footstep.pause();
-            }
-            // switch (event.keyCode) {
-            //     case 65:
-            //         //left
-            //         player.stop(1)
-            //         break;
-            //     case 87:
-            //         //up
-            //         player.stop(2)
-            //         break;
-            //     case 68:
-            //         //right
-            //         player.stop(3)
-            //         break;
-            //     case 83:
-            //         //down
-            //         player.stop(4)
-            //         break;
-            //     case 32:
-            //         player.slowDown();
-            //         break;
-            // }
-
-        });
+        
         /* Start the game */
         requestAnimationFrame(doFrame);
     }
@@ -423,8 +328,126 @@ const GamePanel = (() => {
         sounds.footstep.pause();
         sounds.background.pause();
     }
+    
+    const keyUp = (event) => {
+        // /* Handle the key up */
+        walking = prevWalking;
+        keys[event.keyCode] = false;
+        if(keys[65] && !keys[87] && !keys[68] && !keys[83]){
+            walking = true;
+            player.move(1);
+            Socket.playerMove(1);
+        }else if(keys[65] && keys[87] && !keys[68] && !keys[83]){
+            walking = true;
+            player.move(2);
+            Socket.playerMove(2);
+        }else if(!keys[65] && keys[87] && !keys[68] && !keys[83]){
+            walking = true;
+            player.move(3);
+            Socket.playerMove(3);
+        }else if(!keys[65] && keys[87] && keys[68] && !keys[83]){
+            walking = true;
+            player.move(4);
+            Socket.playerMove(4);
+        }else if(!keys[65] && !keys[87] && keys[68] && !keys[83]){
+            walking = true;
+            player.move(5);
+            Socket.playerMove(5);
+        }else if(!keys[65] && !keys[87] && keys[68] && keys[83]){
+            walking = true;
+            player.move(6);
+            Socket.playerMove(6);
+        }else if(!keys[65] && !keys[87] && !keys[68] && keys[83]){
+            walking = true;
+            player.move(7);
+            Socket.playerMove(7);
+        }else if(keys[65] && !keys[87] && !keys[68] && keys[83]){
+            walking = true;
+            player.move(8);
+            Socket.playerMove(8);
+        }else{
+            walking = false;
+            player.stop();
+            Socket.playerMove(0);
+        }
+        if(walking !== prevWalking){
+            prevWalking = false;
+            sounds.footstep.pause();
+        }
+    }
+    
+    const keyDown = (event) => {
+        /* Handle the key down */
+        walking = prevWalking;
+        keys[event.keyCode] = true;
+        if(keys[65] && !keys[87] && !keys[68] && !keys[83]){
+            walking = true;
+            player.move(1);
+            Socket.playerMove(1);
+        }else if(keys[65] && keys[87] && !keys[68] && !keys[83]){
+            walking = true;
+            player.move(2);
+            Socket.playerMove(2);
+        }else if(!keys[65] && keys[87] && !keys[68] && !keys[83]){
+            walking = true;
+            player.move(3);
+            Socket.playerMove(3);
+        }else if(!keys[65] && keys[87] && keys[68] && !keys[83]){
+            walking = true;
+            player.move(4);
+            Socket.playerMove(4);
+        }else if(!keys[65] && !keys[87] && keys[68] && !keys[83]){
+            walking = true;
+            player.move(5);
+            Socket.playerMove(5);
+        }else if(!keys[65] && !keys[87] && keys[68] && keys[83]){
+            walking = true;
+            player.move(6);
+            Socket.playerMove(6);
+        }else if(!keys[65] && !keys[87] && !keys[68] && keys[83]){
+            walking = true;
+            player.move(7);
+            Socket.playerMove(7);
+        }else if(keys[65] && !keys[87] && !keys[68] && keys[83]){
+            walking = true;
+            player.move(8);
+            Socket.playerMove(8);
+        }
+        if(prevWalking !== walking){
+            sounds.footstep.play();
+            prevWalking = true;
+        }
+    }
+    
+    const anotherPlayerMove = (code) => {
+        if(code === 0){
+            //Another player stop
+            anotherPlayer.stop();
+            if(walking !== prevWalking){
+                prevWalking = false;
+                sounds.footstep.pause();
+            }
+        }else{
+            //Another player move
+            anotherPlayer.move(code);
+            if(prevWalking !== walking){
+                sounds.footstep.play();
+                prevWalking = true;
+            }
+        }
+    }
 
-    return { gameStart, initialize, gameOver };
+    const anotherPlayerShoot = () => {
+        bullets.push(Projectile(context, anotherPlayer, gameArea));
+        sounds.shoot.currentTime = 0;
+        sounds.shoot.play();
+        setTimeout(() => {
+            sounds.shellDrop.currentTime = 0;
+            sounds.shellDrop.play();
+        }, 200)
+    }
+
+    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot };
 })();
 
 //

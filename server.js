@@ -165,9 +165,6 @@ io.on("connection", (socket) => {
                 io.emit("players", JSON.stringify({1:player1, 2:player2}));
                 io.emit("add player", JSON.stringify(content));
             }
-            if(player1 && player2) {
-                //TODO: Game start
-            }
         });
         socket.on("remove player", (content) => {
             if(content.num === 1 && _.isEqual(content.user, player1)) {
@@ -182,28 +179,15 @@ io.on("connection", (socket) => {
             }
         });
         socket.on("get players", () => {
-            socket.emit("players", JSON.stringify({1:player1, 2:player2}));
+            io.emit("players", JSON.stringify({1:player1, 2:player2}));
+        })
+        socket.on("move player", (content) => {
+            io.emit("move", JSON.stringify(content));
+        })
+        socket.on("shoot player", (content) => {
+            io.emit("shoot", JSON.stringify(content));
         })
 
-        // socket.on("get messages", () => {
-        //     // Send the chatroom messages to the browser
-        //     io.emit("messages", fs.readFileSync("data/chatroom.json", "utf-8"));
-        // });
-        // socket.on("post message", (content) => {
-        //     // Add the message to the chatroom
-        //     const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json"));
-        //     const message = {
-        //         user: { username, avatar, name },
-        //         datetime: new Date(),
-        //         content: content
-        //     }
-        //     chatroom.push(message);
-        //     fs.writeFileSync("data/chatroom.json", JSON.stringify(chatroom, null, " "));
-        //     io.emit("add message", JSON.stringify(message));
-        // });
-        // socket.on("post typing", (name) => {
-        //     io.emit("add typing", name);
-        // });
     }
 });
 

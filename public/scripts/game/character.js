@@ -5,7 +5,7 @@
 // - `gameArea` - The bounding box of the game area
 const Character = function(ctx, x, y, gameArea, sequences, speed) {
     // This is the sprite object of the player created from the Sprite module.
-    const sprite = Sprite(ctx, x, y);
+    const sprite = new Sprite(ctx, x, y);
 
     // The sprite object is configured for the player sprite here.
     sprite.setSequence(sequences.idleDown)

@@ -15,9 +15,6 @@ const Socket = (function() {
         socket.on("connect", () => {
             // Get the online user list
             socket.emit("get players");
-
-            // // Get the chatroom messages
-            // socket.emit("get messages");
         });
 
         // Set up the users event
@@ -41,26 +38,19 @@ const Socket = (function() {
             PlayerPairUpPanel.addUser(content.user, content.num);
         });
 
+        socket.on("move", (content) => {
+            content = JSON.parse(content);
+            if(content.user.name !== Authentication.getUser().name){
+                GamePanel.anotherPlayerMove(content.code);
+            }
+        });
 
-        // // Set up the messages event
-        // socket.on("messages", (chatroom) => {
-        //     chatroom = JSON.parse(chatroom);
-        //
-        //     // Show the chatroom messages
-        //     ChatPanel.update(chatroom);
-        // });
-        //
-        // // Set up the add message event
-        // socket.on("add message", (message) => {
-        //     message = JSON.parse(message);
-        //     // Add the message to the chatroom
-        //     ChatPanel.addMessage(message);
-        // });
-        //
-        // socket.on("add typing", (message) => {
-        //     ChatPanel.addTyping(message);
-        // });
-
+        socket.on("shoot", (content) => {
+            content = JSON.parse(content);
+            if(content.user.name !== Authentication.getUser().name){
+                GamePanel.anotherPlayerShoot();
+            }
+        });
     };
 
     // This function disconnects the socket from the server
@@ -81,18 +71,16 @@ const Socket = (function() {
         }
     }
 
-    // // This function sends a post message event to the server
-    // const postMessage = function(content) {
-    //     if (socket && socket.connected) {
-    //         socket.emit("post message", content);
-    //     }
-    // };
-    //
-    // const postTyping = function(name) {
-    //     if (socket && socket.connected) {
-    //         socket.emit("post typing", name);
-    //     }
-    // }
+    const playerMove = (code) => {
+        if (socket && socket.connected) {
+            socket.emit("move player", {code, user: Authentication.getUser()});
+        }
+    }
 
-    return { getSocket, connect, disconnect, addPlayer, removePlayer };
+    const playerShoot = () => {
+        if (socket && socket.connected) {
+            socket.emit("shoot player", {user: Authentication.getUser()});
+        }
+    }
+    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove };
 })();
