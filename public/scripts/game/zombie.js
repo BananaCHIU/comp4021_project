@@ -3,7 +3,7 @@
 // - `x` - The initial x position of the player
 // - `y` - The initial y position of the player
 // - `gameArea` - The bounding box of the game area
-const Zombie = function(ctx, x, y, gameArea) {
+const Zombie = function(ctx, x, y, gameArea, zomNum = 0) {
 
     // This is the sprite sequences of the player facing different directions.
     // It contains the idling sprite sequences `idleLeft`, `idleUp`, `idleRight` and `idleDown`,
@@ -75,7 +75,7 @@ const Zombie = function(ctx, x, y, gameArea) {
     }];
 
     let speed = 10;
-    const zombieNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
+    let zombieNum = zomNum;
     let dead = false;
     // This is the sprite object of the player created from the Sprite module.
     const character = Character(ctx, x, y, gameArea, sequences[zombieNum], speed);
@@ -129,11 +129,16 @@ const Zombie = function(ctx, x, y, gameArea) {
 
     const die = () => {
         dead = true;
+        character.stop();
         character.setSequence(Object.values(dieSequences[zombieNum])[character.getDirection()-1]);
     }
 
     const getDead = () => {
         return dead;
+    }
+
+    const getZombieNum = () => {
+        return zombieNum
     }
 
     // The methods are returned as an object here.
@@ -150,6 +155,7 @@ const Zombie = function(ctx, x, y, gameArea) {
         getDirection: character.getDirection,
         draw: character.draw,
         update: update,
-        calculateAngle: calculateAngle
+        calculateAngle: calculateAngle,
+        getZombieNum: getZombieNum,
     };
 };

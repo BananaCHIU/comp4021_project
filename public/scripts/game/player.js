@@ -69,6 +69,7 @@ const Player = function(ctx, x, y, gameArea, playerNum) {
 
     const die = () => {
         dead = true;
+        character.stop();
         character.setSequence(Object.values(dieSequence)[character.getDirection()-1]);
     }
     const getDead = () => {

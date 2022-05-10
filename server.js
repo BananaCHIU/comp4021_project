@@ -203,8 +203,8 @@ io.on("connection", (socket) => {
         socket.on("shoot player", (content) => {
             io.emit("shoot", JSON.stringify(content));
         })
-        socket.on("zombie spawned", (XY) => {
-            io.emit("spawn zombie", JSON.stringify(XY));
+        socket.on("zombie spawned", (content) => {
+            io.emit("spawn zombie", JSON.stringify(content));
         })
 
     }

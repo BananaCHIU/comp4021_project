@@ -52,10 +52,10 @@ const Socket = (function() {
             }
         });
 
-        socket.on("spawn zombie", (XY) => {
-            XY = JSON.parse(XY);
-            if(XY.user.name !== Authentication.getUser().name){
-                GamePanel.anotherSpawnZombie(XY.x, XY.y);
+        socket.on("spawn zombie", (content) => {
+            content = JSON.parse(content);
+            if(content.user.name !== Authentication.getUser().name){
+                GamePanel.anotherSpawnZombie(content.XY.x, content.XY.y, content.zomNum);
             }
 
         })
@@ -111,9 +111,9 @@ const Socket = (function() {
         }
     }
 
-    const zombieSpawned = (XY) => {
+    const zombieSpawned = (XY, zomNum) => {
         if (socket && socket.connected) {
-            socket.emit("zombie spawned", {...XY, user: Authentication.getUser()});
+            socket.emit("zombie spawned", {XY, zomNum, user: Authentication.getUser()});
         }
     }
 

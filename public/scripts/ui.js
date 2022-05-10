@@ -236,6 +236,12 @@ const GamePanel = (() => {
             GamePanel.gameOver();
             return;
         }
+
+        bullets.forEach((bullet) => {
+            const {x, y} = bullet.getXY();
+
+        });
+
         zombies.forEach((zombie, key) => {
             if(!zombie.getDead()){
                 const pos = zombie.getXY();
@@ -254,13 +260,22 @@ const GamePanel = (() => {
             else {
                 zombies.delete(key);
             }
-        })
+        });
 
         /* Update the sprites */
         player.update(now);
         anotherPlayer.update(now);
-        bullets.forEach((bullet) => {
+        bullets = bullets.filter((bullet) => {
+            const {x, y} = bullet.getXY();
+            if(gameArea.isPointInBox(x, y)){
+                //is inside game area
+                return true;
+            }
+            delete bullet;
+            return false;
+        }).map((bullet) => {
             bullet.update();
+            return bullet;
         })
         zombies.forEach((zombie, key) => {
             zombie.update(now, player, anotherPlayer);
@@ -337,14 +352,15 @@ const GamePanel = (() => {
     const spawnZombie = () => {
         setInterval(() => {
             const randomXY = gameArea.randomPoint();
-            zombies.set(zombieCount, Zombie(context, randomXY.x, randomXY.y, gameArea))
+            const zomNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
+            zombies.set(zombieCount, Zombie(context, randomXY.x, randomXY.y, gameArea, zomNum))
             zombieCount++;
-            Socket.zombieSpawned(randomXY);
+            Socket.zombieSpawned(randomXY, zomNum);
         }, 1000)
     }
 
-    const anotherSpawnZombie = (x, y) => {
-        zombies.set(zombieCount, Zombie(context, x, y, gameArea))
+    const anotherSpawnZombie = (x, y, zomNum) => {
+        zombies.set(zombieCount, Zombie(context, x, y, gameArea, zomNum))
         zombieCount++;
     }
 

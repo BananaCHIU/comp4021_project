@@ -55,15 +55,13 @@ const Projectile = (ctx, player, gameArea) => {
         }
 
         /* Set the new position if it is within the game area */
-        if (gameArea.isPointInBox(x, y))
-            sprite.setXY(x, y);
-        else
-            sprite.setScale(0);
+        sprite.setXY(x, y);
     }
 
     return {
         getBoundingBox: sprite.getBoundingBox,
         draw: draw,
-        update: update
+        update: update,
+        getXY: sprite.getXY,
     }
 }
