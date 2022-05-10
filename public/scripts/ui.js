@@ -222,10 +222,6 @@ const GamePanel = (() => {
         const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
         // $("#time-remaining").text(timeRemaining);
         /* Handle the game over situation here */
-        if(timeRemaining == 0){
-
-        }
-
         //Game Over
         if((timeRemaining == 0) || (player.getDead() && anotherPlayer.getDead())){
             GamePanel.gameOver();
