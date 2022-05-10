@@ -13,5 +13,10 @@
   "name": "banana",
   "avatar": "Baby Chick 1",
   "password": "$2b$10$NN/Nw7MYeeApFjssPwLr/eUQZBNXBvBo4eE8wQ.2wvm8XZboff5FC"
+ },
+ "Lee": {
+  "name": "Lee",
+  "avatar": "Rabbit",
+  "password": "$2b$10$kl3lhUkps6U5WAD1rcdUAOqcQ6LewZiTwfXe4EeQSKKFBSkFR7dW."
  }
 }

@@ -129,6 +129,14 @@ const PlayerPairUpPanel = (function() {
 
     const update = function(players) {
         onlinePlayers = players;
+        console.log('update')
+        for(const num in onlinePlayers) {
+            if(onlinePlayers[num]) {
+                console.log(num)
+                $(`#player${num}-pair .player${num}-avatar`).html(Avatar.getCode(onlinePlayers[num].avatar));
+                $(`#player${num}-pair .player${num}-name`).text(onlinePlayers[num].name);
+            }
+        }
     };
 
     // This function adds a user in the panel

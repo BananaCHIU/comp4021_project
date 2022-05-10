@@ -165,6 +165,9 @@ io.on("connection", (socket) => {
                 io.emit("players", JSON.stringify({1:player1, 2:player2}));
                 io.emit("add player", JSON.stringify(content));
             }
+            if(player1 && player2) {
+                //TODO: Game start
+            }
         });
         socket.on("remove player", (content) => {
             if(content.num === 1 && _.isEqual(content.user, player1)) {
@@ -178,6 +181,10 @@ io.on("connection", (socket) => {
                 io.emit("remove player", JSON.stringify(content));
             }
         });
+        socket.on("get players", () => {
+            socket.emit("players", JSON.stringify({1:player1, 2:player2}));
+        })
+
         // socket.on("get messages", () => {
         //     // Send the chatroom messages to the browser
         //     io.emit("messages", fs.readFileSync("data/chatroom.json", "utf-8"));
