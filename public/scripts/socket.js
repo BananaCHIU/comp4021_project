@@ -51,6 +51,25 @@ const Socket = (function() {
                 GamePanel.anotherPlayerShoot();
             }
         });
+
+        socket.on("game start", (onlinePlayers) => {
+            if(onlinePlayers[1] !== null && onlinePlayers[2] !== null){
+                //Game Start
+                let me = Authentication.getUser();
+                if(me.name === onlinePlayers[1].name){
+                    GamePanel.gameStart({num: 1, player: onlinePlayers[1]}, {num: 2, player: onlinePlayers[2]});
+                }else{
+                    GamePanel.gameStart({num: 2, player: onlinePlayers[2]}, {num: 1, player: onlinePlayers[1]});
+                }
+                $("#pair-up-overlay").hide();
+                for(const num in onlinePlayers) {
+                    if(onlinePlayers[num]) {
+                        $(`#player${num}-pair .player${num}-avatar`).html("");
+                        $(`#player${num}-pair .player${num}-name`).text("");
+                    }
+                }
+            }
+        });
     };
 
     // This function disconnects the socket from the server

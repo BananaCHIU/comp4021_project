@@ -144,6 +144,9 @@ io.use((socket, next) => {
 let onlineUsers = {};
 let player1 = null;
 let player2 = null;
+const spawnZombie = () => {
+
+}
 io.on("connection", (socket) => {
     // Add a new user to the online user list
 
@@ -174,6 +177,9 @@ io.on("connection", (socket) => {
                 player2 = content.user;
                 io.emit("players", JSON.stringify({1:player1, 2:player2}));
                 io.emit("add player", JSON.stringify(content));
+            }
+            if(player1 && player2){
+                io.emit("game start", JSON.stringify({1:player1, 2:player2}));
             }
         });
         socket.on("remove player", (content) => {

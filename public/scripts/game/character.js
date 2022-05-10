@@ -116,5 +116,6 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
         getXY: sprite.getXY,
         setXY: sprite.setXY,
         updateSprite: sprite.update,
+        setSequence: sprite.setSequence,
     };
 };

@@ -8,7 +8,7 @@ const Zombie = function(ctx, x, y, gameArea) {
     // This is the sprite sequences of the player facing different directions.
     // It contains the idling sprite sequences `idleLeft`, `idleUp`, `idleRight` and `idleDown`,
     // and the moving sprite sequences `moveLeft`, `moveUp`, `moveRight` and `moveDown`.
-    const sequences = {
+    const sequences = [{
         /* Moving sprite sequences for facing different directions */
         idleDown:       { x: 0, y: 225, width: 112.5, height: 112.5, rotate: 180, count: 1, timing: 200, loop: false },
 
@@ -20,9 +20,65 @@ const Zombie = function(ctx, x, y, gameArea) {
         moveRightDown:  { x: 0, y: 225, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: true },
         moveDown:       { x: 0, y: 225, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: true },
         moveLeftDown:   { x: 0, y: 225, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: true },
-    };
+    },{
+        idleDown:       { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 180, count: 1, timing: 200, loop: false },
 
-    let speed = 30;
+        moveLeft:       { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: true },
+        moveLeftUp:     { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: true },
+        moveUp:         { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: true },
+        moveRightUp:    { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: true },
+        moveRight:      { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: true },
+        moveRightDown:  { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: true },
+        moveDown:       { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: true },
+        moveLeftDown:   { x: 450, y: 225, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: true },
+    },{
+        idleDown:       { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 180, count: 1, timing: 200, loop: false },
+
+        moveLeft:       { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: true },
+        moveLeftUp:     { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: true },
+        moveUp:         { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: true },
+        moveRightUp:    { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: true },
+        moveRight:      { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: true },
+        moveRightDown:  { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: true },
+        moveDown:       { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: true },
+        moveLeftDown:   { x: 0, y: 450, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: true },
+    }];
+
+    const dieSequences = [{
+        /* Moving sprite sequences for facing different directions */
+        moveLeft:       { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: false },
+        moveLeftUp:     { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: false },
+        moveUp:         { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: false },
+        moveRightUp:    { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: false },
+        moveRight:      { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: false },
+        moveRightDown:  { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: false },
+        moveDown:       { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: false },
+        moveLeftDown:   { x: 0, y: 337.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: false },
+    },{
+        moveLeft:       { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: false },
+        moveLeftUp:     { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: false },
+        moveUp:         { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: false },
+        moveRightUp:    { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: false },
+        moveRight:      { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: false },
+        moveRightDown:  { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: false },
+        moveDown:       { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: false },
+        moveLeftDown:   { x: 450, y: 337.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: false },
+    },{
+        moveLeft:       { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: false },
+        moveLeftUp:     { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: false },
+        moveUp:         { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: false },
+        moveRightUp:    { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: false },
+        moveRight:      { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: false },
+        moveRightDown:  { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: false },
+        moveDown:       { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: false },
+        moveLeftDown:   { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: false },
+    }];
+
+    let speed = 10;
+    const zombieNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
+    let dead = false;
+    // This is the sprite object of the player created from the Sprite module.
+    const character = Character(ctx, x, y, gameArea, sequences[zombieNum], speed);
 
     const selectTarget = (player1, player2, x, y) => {
         const player1XY = player1.getBoundingBox().getCenter();
@@ -59,7 +115,6 @@ const Zombie = function(ctx, x, y, gameArea) {
 
     const update = (time, player1, player2) => {
         let { x, y } = character.getXY();
-        console.log(character.getXY())
         const angle = calculateAngle(player1, player2, x, y)
         move(angle);
 
@@ -73,13 +128,23 @@ const Zombie = function(ctx, x, y, gameArea) {
         character.updateSprite(time);
     }
 
-    // This is the sprite object of the player created from the Sprite module.
-    const character = Character(ctx, x, y, gameArea, sequences, speed);
+    const die = () => {
+        dead = true;
+        character.setSequence(dieSequences[zombieNum]);
+    }
+
+    const getDead = () => {
+        return dead;
+    }
 
     // The methods are returned as an object here.
     return {
         move: move,
         //stop: character.stop,
+        die: die,
+        getDead: getDead,
+        getXY: character.getXY,
+        setXY: character.setXY,
         speedUp: character.speedUp,
         slowDown: character.slowDown,
         getBoundingBox: character.getBoundingBox,

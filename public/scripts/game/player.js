@@ -51,15 +51,37 @@ const Player = function(ctx, x, y, gameArea, playerNum) {
         moveLeftDown:   { x: 450, y: 112.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: true },
     };
 
-    let speed = 50;
+    const dieSequence = {
+        moveLeft:       { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 180, count: 4, timing: 200, loop: false },
+        moveLeftUp:     { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 225, count: 4, timing: 200, loop: false },
+        moveUp:         { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 270, count: 4, timing: 200, loop: false },
+        moveRightUp:    { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 315, count: 4, timing: 200, loop: false },
+        moveRight:      { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 0, count: 4, timing: 200, loop: false },
+        moveRightDown:  { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 45, count: 4, timing: 200, loop: false },
+        moveDown:       { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 90, count: 4, timing: 200, loop: false },
+        moveLeftDown:   { x: 0, y: 112.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: false },
+    }
 
+    let speed = 50;
+    let dead = false;
     // This is the sprite object of the player created from the Sprite module.
     const character = new Character(ctx, x, y, gameArea, playerNum === 1? sequences1: sequences2, speed);
 
+    const die = () => {
+        dead = true;
+        character.setSequence(dieSequence);
+    }
+    const getDead = () => {
+        return dead;
+    }
     // The methods are returned as an object here.
     return {
         move: character.move,
         stop: character.stop,
+        die: die,
+        getDead: getDead,
+        getXY: character.getXY,
+        setXY: character.setXY,
         speedUp: character.speedUp,
         slowDown: character.slowDown,
         getBoundingBox: character.getBoundingBox,

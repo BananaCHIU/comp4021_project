@@ -135,22 +135,6 @@ const PlayerPairUpPanel = (function() {
                 $(`#player${num}-pair .player${num}-name`).text(onlinePlayers[num].name);
             }
         }
-        if(onlinePlayers[1] !== null && onlinePlayers[2] !== null){
-            //Game Start
-            let me = Authentication.getUser();
-            if(me.name === onlinePlayers[1].name){
-                GamePanel.gameStart({num: 1, player: onlinePlayers[1]}, {num: 2, player: onlinePlayers[2]});
-            }else{
-                GamePanel.gameStart({num: 2, player: onlinePlayers[2]}, {num: 1, player: onlinePlayers[1]});
-            }
-            $("#pair-up-overlay").hide();
-            for(const num in onlinePlayers) {
-                if(onlinePlayers[num]) {
-                    $(`#player${num}-pair .player${num}-avatar`).html("");
-                    $(`#player${num}-pair .player${num}-name`).text("");
-                }
-            }
-        }
     };
 
     // This function adds a user in the panel
@@ -268,6 +252,29 @@ const GamePanel = (() => {
         //     gem.randomize(gameArea);
         // }
 
+        //Game Over
+        if(player.getDead() && anotherPlayer.getDead()){
+            GamePanel.gameOver();
+            return;
+        }
+        zombies.forEach((zombie, key) => {
+            if(!zombie.getDead()){
+                const pos = zombie.getXY();
+                if(!player.dead && player.getBoundingBox().isPointInBox(pos.x, pos.y)){
+                    //zombie touch player
+                    walking = false;
+                    player.die();
+                    $(document).off('keyup');
+                    $(document).off('keydown');
+                    $(document).off('keypress');
+                }else if(!anotherPlayer.dead && anotherPlayer.getBoundingBox().isPointInBox(pos.x, pos.y)){
+                    //zombie touch another player
+                    anotherPlayer.die();
+                }
+            }
+        })
+
+
         /* Clear the screen */
         context.clearRect(0, 0, cv.width, cv.height);
 
@@ -286,8 +293,6 @@ const GamePanel = (() => {
     }
 
     const gameStart = function (me, another) {
-        console.log(me.num);
-        console.log(another.num);
         const player1XY = { x: 427, y: 240 }
         const player2XY = { x: 727, y: 240 }
         gaming = true;
@@ -322,8 +327,6 @@ const GamePanel = (() => {
 
     const gameOver = () => {
         gaming = false;
-        $(document).off('keyup');
-        $(document).off('keydown');
         context.clearRect(0,0,cv.width,cv.height);
         sounds.footstep.pause();
         sounds.background.pause();
