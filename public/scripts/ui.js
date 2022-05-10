@@ -239,14 +239,14 @@ const GamePanel = (() => {
         zombies.forEach((zombie, key) => {
             if(!zombie.getDead()){
                 const pos = zombie.getXY();
-                if(!player.dead && player.getBoundingBox().isPointInBox(pos.x, pos.y)){
+                if(!player.getDead() && player.getBoundingBox().isPointInBox(pos.x, pos.y)){
                     //zombie touch player
                     walking = false;
                     player.die();
                     $(document).off('keyup');
                     $(document).off('keydown');
                     $(document).off('keypress');
-                }else if(!anotherPlayer.dead && anotherPlayer.getBoundingBox().isPointInBox(pos.x, pos.y)){
+                }else if(!anotherPlayer.getDead() && anotherPlayer.getBoundingBox().isPointInBox(pos.x, pos.y)){
                     //zombie touch another player
                     anotherPlayer.die();
                 }
