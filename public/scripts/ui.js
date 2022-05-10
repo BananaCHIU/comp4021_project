@@ -294,7 +294,7 @@ const GamePanel = (() => {
         anotherPlayer = new Player(context, 727, 240, gameArea, another.num); // Another player
         /* Hide the start screen */
         sounds.background.play();
-        
+
         // $("#game-start").hide();
         // gem.randomize(gameArea);
         /* Handle the keydown of arrow keys and spacebar */
@@ -315,7 +315,7 @@ const GamePanel = (() => {
                 Socket.playerShoot();
             }
         });
-        
+
         /* Start the game */
         requestAnimationFrame(doFrame);
     }
@@ -328,7 +328,7 @@ const GamePanel = (() => {
         sounds.footstep.pause();
         sounds.background.pause();
     }
-    
+
     const keyUp = (event) => {
         // /* Handle the key up */
         walking = prevWalking;
@@ -375,7 +375,7 @@ const GamePanel = (() => {
             sounds.footstep.pause();
         }
     }
-    
+
     const keyDown = (event) => {
         /* Handle the key down */
         walking = prevWalking;
@@ -418,7 +418,7 @@ const GamePanel = (() => {
             prevWalking = true;
         }
     }
-    
+
     const anotherPlayerMove = (code) => {
         if(code === 0){
             //Another player stop

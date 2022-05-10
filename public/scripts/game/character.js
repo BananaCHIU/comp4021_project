@@ -71,7 +71,7 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
         speed = 150;
     };
 
-    // This function updates the player depending on his movement.
+    // This function updates the player (x, y) depending on his movement.
     // - `time` - The timestamp when this function is called
     const update = function(time) {
         /* Update the player if the player is moving */
@@ -112,6 +112,9 @@ const Character = function(ctx, x, y, gameArea, sequences, speed) {
         getBoundingBox: sprite.getBoundingBox,
         getDirection: getDirection,
         draw: sprite.draw,
-        update: update
+        update: update,
+        getXY: sprite.getXY,
+        setXY: sprite.setXY,
+        updateSprite: sprite.update,
     };
 };

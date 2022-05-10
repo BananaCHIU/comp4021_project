@@ -51,7 +51,7 @@ const Player = function(ctx, x, y, gameArea, playerNum) {
         moveLeftDown:   { x: 450, y: 112.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: true },
     };
 
-    let speed = 30;
+    let speed = 50;
 
     // This is the sprite object of the player created from the Sprite module.
     const character = new Character(ctx, x, y, gameArea, playerNum === 1? sequences1: sequences2, speed);

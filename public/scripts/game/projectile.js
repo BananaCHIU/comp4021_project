@@ -20,7 +20,7 @@ const Projectile = (ctx, player, gameArea) => {
         moveLeftUp:     { x: 0, y: 112, width: 16, height: 16, count: 1, timing: 0, loop: false }
     };
 
-    sprite.setSequence(direction === 1 ? sequence.right : sequence.left)
+    sprite.setSequence(sequence.moveRight)
         .setScale(0.5)
         .setShadowScale({ x: 0, y: 0 })
         .useSheet("assets/bullet_sprites.png");

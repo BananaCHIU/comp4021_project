@@ -179,7 +179,7 @@ io.on("connection", (socket) => {
             }
         });
         socket.on("get players", () => {
-            io.emit("players", JSON.stringify({1:player1, 2:player2}));
+            socket.emit("players", JSON.stringify({1:player1, 2:player2}));
         })
         socket.on("move player", (content) => {
             io.emit("move", JSON.stringify(content));
