@@ -231,7 +231,7 @@ io.on("connection", (socket) => {
                 if(_.isEqual(player, obj)) skip = true;
             })
             if(!skip){
-                rank.push();
+                rank.push(obj);
                 rank.sort(compare);
                 rank = rank.slice(0, 5);
             }
