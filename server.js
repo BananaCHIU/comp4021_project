@@ -129,6 +129,9 @@ app.get("/signout", (req, res) => {
     res.json({ status: "success" });
 });
 
+app.get("/rank", (req, res) => {
+    res.send(rank);
+});
 
 //
 // ***** Please insert your Lab 6 code here *****
@@ -222,10 +225,18 @@ io.on("connection", (socket) => {
             io.emit("spawn zombie", JSON.stringify(content));
         })
         socket.on("game over", (content) => {
-            const {user, score} = content;
-            rank.push({player: user, score});
-            rank.sort(compare);
-            rank = rank.slice(0, 5);
+            const obj = {player: content.user, score: content.score};
+            let skip = false;
+            rank.forEach((player) => {
+                if(_.isEqual(player, obj)) skip = true;
+            })
+            if(!skip){
+                rank.push(obj);
+                rank.sort(compare);
+                rank = rank.slice(0, 5);
+            }
+            player1 = null;
+            player2 = null;
             console.log(rank);
         })
     }
