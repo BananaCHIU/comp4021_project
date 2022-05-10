@@ -194,6 +194,9 @@ const GamePanel = (() => {
     let totalGameTime = 1000 * 60 * 4;
     let gameStartTime = 0;
 
+    let myScore = 0;
+    let myPlayerNum;
+
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
         footstep: new Audio("assets/footstep.mp3"),
@@ -235,6 +238,11 @@ const GamePanel = (() => {
                 if(!zombie.getDead() && zombie.getBoundingBox().isPointInBox(x, y)){
                     //hit zombie
                     zombie.die();
+                    if(bullet.getPlayer().getPlayerNum() === myPlayerNum){
+                        myScore++;
+                        $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
+                        $("#user-panel .user-name").text(`${Authentication.getUser().name} Score: ${myScore}`);
+                    }
                     keep = false;
                     break;
                 }
@@ -315,6 +323,7 @@ const GamePanel = (() => {
         gameArea = new BoundingBox(context, 165, 60, 740, 1860);
 
         /* Create the sprites in the game */
+        myPlayerNum = me.num;
         if(me.num === 1) {
             player = new Player(context, player1XY.x, player1XY.y, gameArea, me.num); // The player
             anotherPlayer = new Player(context, player2XY.x, player2XY.y, gameArea, another.num); // Another player
@@ -323,6 +332,9 @@ const GamePanel = (() => {
             player = new Player(context, player2XY.x, player2XY.y, gameArea, me.num); // The player
             anotherPlayer = new Player(context, player1XY.x, player1XY.y, gameArea, another.num); // Another player
         }
+
+        $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
+        $("#user-panel .user-name").text(`${Authentication.getUser().name} Score: ${myScore}`);
 
         sounds.background.play();
         zombiePlaySound();
@@ -341,10 +353,16 @@ const GamePanel = (() => {
 
     const gameOver = () => {
         gaming = false;
+        $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
+        $("#user-panel .user-name").text(Authentication.getUser().name);
         context.clearRect(0,0,cv.width,cv.height);
         clearTimeout(timerZombieSound);
         sounds.footstep.pause();
         sounds.background.pause();
+    }
+
+    const getMyScore = () => {
+        return myScore;
     }
 
     const spawnZombie = () => {
@@ -498,7 +516,7 @@ const GamePanel = (() => {
         }, 200)
     }
 
-    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie };
+    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie, getMyScore };
 })();
 
 const UI = (function() {

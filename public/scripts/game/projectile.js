@@ -58,10 +58,15 @@ const Projectile = (ctx, player, gameArea) => {
         sprite.setXY(x, y);
     }
 
+    const getPlayer = () => {
+        return player;
+    }
+
     return {
         getBoundingBox: sprite.getBoundingBox,
         draw: draw,
         update: update,
         getXY: sprite.getXY,
+        getPlayer: getPlayer,
     }
 }

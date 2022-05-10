@@ -75,6 +75,9 @@ const Player = function(ctx, x, y, gameArea, playerNum) {
     const getDead = () => {
         return dead;
     }
+    const getPlayerNum = () => {
+        return playerNum;
+    }
     // The methods are returned as an object here.
     return {
         move: character.move,
@@ -88,6 +91,7 @@ const Player = function(ctx, x, y, gameArea, playerNum) {
         getBoundingBox: character.getBoundingBox,
         getDirection: character.getDirection,
         draw: character.draw,
-        update: character.update
+        update: character.update,
+        getPlayerNum: getPlayerNum,
     };
 };
