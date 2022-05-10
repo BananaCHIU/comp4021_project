@@ -84,10 +84,10 @@ const UserPanel = (function() {
         // Click event for the signout button
         $("#signout-button").on("click", () => {
             // Send a signout request
+            GamePanel.gameOver();
             Authentication.signout(
                 () => {
                     Socket.disconnect();
-                    GamePanel.gameOver();
                     hide();
                     SignInForm.show();
                 }
@@ -381,7 +381,7 @@ const GamePanel = (() => {
         sounds.gameover.currentTime = 2.5;
         sounds.gameover.play();
         $("#game-over").show();
-        console.log('game-over')
+        Socket.gameOvered(Authentication.getUser(), myScore);
     }
 
     const getMyScore = () => {

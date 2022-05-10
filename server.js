@@ -144,9 +144,21 @@ io.use((socket, next) => {
 let onlineUsers = {};
 let player1 = null;
 let player2 = null;
-const spawnZombie = () => {
 
+// Rank Structure
+// {player: UserObject, score: Score}
+let rank = [];
+
+function compare( a, b ) {
+    if ( a.score < b.score ){
+        return 1;
+    }
+    if ( a.score > b.score ){
+        return -1;
+    }
+    return 0;
 }
+
 io.on("connection", (socket) => {
     // Add a new user to the online user list
 
@@ -209,7 +221,13 @@ io.on("connection", (socket) => {
         socket.on("zombie spawned", (content) => {
             io.emit("spawn zombie", JSON.stringify(content));
         })
-
+        socket.on("game over", (content) => {
+            const {user, score} = content;
+            rank.push({player: user, score});
+            rank.sort(compare);
+            rank = rank.slice(0, 5);
+            console.log(rank);
+        })
     }
 });
 

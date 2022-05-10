@@ -18,5 +18,15 @@
   "name": "Lee",
   "avatar": "Rabbit",
   "password": "$2b$10$kl3lhUkps6U5WAD1rcdUAOqcQ6LewZiTwfXe4EeQSKKFBSkFR7dW."
+ },
+ "herman1": {
+  "name": "herman1",
+  "avatar": "Bat",
+  "password": "$2b$10$dZdHijJWdfkGEInQaOzm1OF.chghZeOXru.ZYHu/vt2q8JiNVSBhu"
+ },
+ "banana1": {
+  "name": "banana1",
+  "avatar": "Butterfly",
+  "password": "$2b$10$23n1z/9hKzyRyD8RCUtXfOCzrDWxtuRL1HeRQgJJpgfrH1eoatM/G"
  }
 }

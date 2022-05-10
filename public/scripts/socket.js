@@ -130,9 +130,11 @@ const Socket = (function() {
         }
     }
 
-    const gameOvered = () => {
-        //TODO: Signal server GameOver, clear all Player
+    const gameOvered = (user, score) => {
+        if (socket && socket.connected) {
+            socket.emit("game over", {user, score});
+        }
     }
 
-    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove, zombieSpawned, playerCheatShoot };
+    return { getSocket, connect, disconnect, addPlayer, removePlayer, playerShoot, playerMove, zombieSpawned, playerCheatShoot , gameOvered };
 })();
