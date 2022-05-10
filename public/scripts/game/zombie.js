@@ -130,7 +130,7 @@ const Zombie = function(ctx, x, y, gameArea) {
 
     const die = () => {
         dead = true;
-        character.setSequence(dieSequences[zombieNum]);
+        character.setSequence(Object.values(dieSequences[zombieNum])[character.getDirection()-1]);
     }
 
     const getDead = () => {
