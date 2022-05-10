@@ -487,6 +487,19 @@ const GamePanel = (() => {
                 fired = true;
             }
         }
+        //Cheat Key: Maximum Bullet Rate
+        if(keys[67]) {
+            for(let i = 1; i <= 8; i++) {
+                bullets.push(Projectile(context, player, gameArea, i));
+            }
+            sounds.shoot.currentTime = 0;
+            sounds.shoot.play();
+            setTimeout(() => {
+                sounds.shellDrop.currentTime = 0;
+                sounds.shellDrop.play();
+            }, 200)
+            Socket.playerCheatShoot();
+        }
         if(prevWalking !== walking){
             sounds.footstep.play();
             prevWalking = true;
@@ -521,7 +534,20 @@ const GamePanel = (() => {
         }, 200)
     }
 
-    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie };
+    const anotherPlayerCheatShoot = () => {
+        console.log('another cheat')
+        for(let i = 1; i <= 8; i++) {
+            bullets.push(Projectile(context, anotherPlayer, gameArea, i));
+        }
+        sounds.shoot.currentTime = 0;
+        sounds.shoot.play();
+        setTimeout(() => {
+            sounds.shellDrop.currentTime = 0;
+            sounds.shellDrop.play();
+        }, 200)
+    }
+
+    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie, anotherPlayerCheatShoot };
 })();
 
 const UI = (function() {

@@ -203,6 +203,9 @@ io.on("connection", (socket) => {
         socket.on("shoot player", (content) => {
             io.emit("shoot", JSON.stringify(content));
         })
+        socket.on("cheat shoot player", (content) => {
+            io.emit("cheat shoot", JSON.stringify(content));
+        })
         socket.on("zombie spawned", (content) => {
             io.emit("spawn zombie", JSON.stringify(content));
         })

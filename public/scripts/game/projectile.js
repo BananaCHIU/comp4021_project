@@ -1,9 +1,9 @@
-const Projectile = (ctx, player, gameArea) => {
+const Projectile = (ctx, player, gameArea, cheatDir = null) => {
 
     const speed = 500;
     const diagonal_speed = 354;
 
-    const direction = player.getDirection();
+    const direction = cheatDir?? player.getDirection();
 
     const { x, y } = player.getBoundingBox().getCenter();
 
