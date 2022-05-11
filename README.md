@@ -9,3 +9,5 @@ Project Starting Point:
 ```npm start```
 
 You can find the Game Description and Game Instruction inside the game
+
+Note: Strongly Recommended To Use 60Hz to play the Game
