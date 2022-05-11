@@ -1,6 +1,14 @@
 [
  {
   "player": {
+   "username": "herman",
+   "avatar": "Octopus",
+   "name": "herman"
+  },
+  "score": 363
+ },
+ {
+  "player": {
    "username": "banana",
    "avatar": "Baby Chick 1",
    "name": "banana"
@@ -14,5 +22,21 @@
    "name": "banana"
   },
   "score": 76
+ },
+ {
+  "player": {
+   "username": "herman",
+   "avatar": "Octopus",
+   "name": "herman"
+  },
+  "score": 35
+ },
+ {
+  "player": {
+   "username": "herman",
+   "avatar": "Octopus",
+   "name": "herman"
+  },
+  "score": 25
  }
 ]

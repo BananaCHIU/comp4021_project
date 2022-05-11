@@ -235,6 +235,7 @@ io.on("connection", (socket) => {
             }
             player1 = null;
             player2 = null;
+            onlineUsers = {};
         })
     }
 });

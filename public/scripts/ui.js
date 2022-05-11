@@ -115,6 +115,7 @@ const UserPanel = (function() {
             // Send a signout request
             if(GamePanel.isGaming()) {
                 GamePanel.gameOver();
+                $("#game-over").hide();
             }
             Authentication.signout(
                 () => {
@@ -190,10 +191,11 @@ const PlayerPairUpPanel = (function() {
             .then((res) => res.json() )
             .then((json) => {
                 $("#rank-list").html("");
-                json.forEach((item) => {
+                json.forEach((item, index) => {
                     $("#rank-list").append("<div class=\"field-content row shadow\">" +
+                        `<span>${index + 1}. </span>` +
                         `<span class=\"user-avatar\">${Avatar.getCode(item.player.avatar)}</span>` +
-                        `<span class=\"user-avatar\">${item.player.name} Score: ${item.score}</span>` +
+                        `<span class=\"user-name\">${item.player.name} Score: ${item.score}</span>` +
                         "</div>");
                 })
 
@@ -201,7 +203,7 @@ const PlayerPairUpPanel = (function() {
             .catch((err) => {
                 console.log(err);
             });
-        $("#pair-up-overlay").show();
+        $("#pair-up-overlay").fadeIn(500);
         $("#player1-pair").on("click", () => {
             if(onlinePlayers[1] === null){
                 Socket.addPlayer({user, num: 1});
@@ -219,7 +221,7 @@ const PlayerPairUpPanel = (function() {
     };
 
     const hide = function() {
-        $("#pair-up-overlay").hide();
+        $("#pair-up-overlay").fadeOut(500);
     };
 
     return { initialize, update, addUser, removeUser, show, hide };
@@ -253,6 +255,7 @@ const GamePanel = (() => {
     let zombieSpawnTimer = null;
     let timeToSpawnZombie = 1000;
     let lastCheatShoot = 0;
+    let aniFrame;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -275,6 +278,7 @@ const GamePanel = (() => {
     const initialize = () => {}
 
     const doFrame = (now) => {
+        if(aniFrame) cancelAnimationFrame(aniFrame);
         if(!gaming) return;
         if (gameStartTime == 0) gameStartTime = now;
         /* Update the time remaining */
@@ -368,7 +372,7 @@ const GamePanel = (() => {
         })
 
         /* Process the next frame */
-        requestAnimationFrame(doFrame);
+        aniFrame = requestAnimationFrame(doFrame);
     }
 
     const zombiePlaySound = () => {
@@ -416,7 +420,7 @@ const GamePanel = (() => {
         zombieSpawnTimer = setTimeout(spawnZombie, timeToSpawnZombie);
 
         /* Start the game */
-        requestAnimationFrame(doFrame);
+        aniFrame = requestAnimationFrame(doFrame);
     }
 
     const gameOver = () => {
@@ -443,11 +447,15 @@ const GamePanel = (() => {
         prevWalking = false;
         walking = false;
         fired = false;
-
         //show game-over
         sounds.gameover.currentTime = 2.5;
         sounds.gameover.play();
-        $("#game-over").show();
+        $("#game-over").on("click", () => {
+            $("#game-over").fadeOut(500);
+            PlayerPairUpPanel.update({1:null, 2:null});
+            PlayerPairUpPanel.show(Authentication.getUser());
+        });
+        $("#game-over").fadeIn(500);
         Socket.gameOvered(Authentication.getUser(), myScore);
     }
 
