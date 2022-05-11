@@ -588,7 +588,7 @@ const GamePanel = (() => {
         //Cheat Key: Maximum Bullet Rate
         if(keys[67]) {
             let now = Date.now();
-            if(lastCheatShoot + 500 <= now){
+            if(lastCheatShoot + 700 <= now){
                 lastCheatShoot = now;
                 for(let i = 1; i <= 8; i++) {
                     bullets.push(Projectile(context, player, gameArea, i));
