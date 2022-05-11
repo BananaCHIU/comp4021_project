@@ -444,6 +444,7 @@ const GamePanel = (() => {
         zombies = new Map();
         zombieCount = 0;
         clearTimeout(zombieSpawnTimer);
+        timeToSpawnZombie = 1000;
         prevWalking = false;
         walking = false;
         fired = false;
