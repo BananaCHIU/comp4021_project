@@ -44,18 +44,27 @@
         </div>
     </div>
     <div id="pair-up-overlay" class="overlay col">
-        <div class="content shadow col">
-            <div class="caption">SELECT PLAYER NUMBER</div>
+        <div class="content shadow row">
+            <div class="col">
+                <div class="caption">SELECT PLAYER NUMBER</div>
+                <div class="spacer-0"></div>
+                <button id="player1-pair" class="pair-up-button" type="button">
+                        <span class="player1-avatar"></span>
+                        <span class="player1-name">PLAYER 1</span>
+                </button>
+                <div class="spacer-0"></div>
+                <button id="player2-pair" class="pair-up-button" type="button">
+                    <span class="player2-avatar"></span>
+                    <span class="player2-name">PLAYER 2</span>
+                </button>
+            </div>
+
             <div class="spacer-0"></div>
-            <button id="player1-pair" class="pair-up-button" type="button">
-                    <span class="player1-avatar"></span>
-                    <span class="player1-name">PLAYER 1</span>
-            </button>
-            <div class="spacer-0"></div>
-            <button id="player2-pair" class="pair-up-button" type="button">
-                <span class="player2-avatar"></span>
-                <span class="player2-name">PLAYER 2</span>
-            </button>
+
+            <div class="col" id="rank-list">
+                <div class="caption">RANK</div>
+                <div class="spacer-0"></div>
+            </div>
         </div>
     </div>
 
@@ -100,6 +109,8 @@
             <div class="caption" id="desc-title">Description And Instruction</div>
             <div class="spacer-0"></div>
             <p class="caption">Description</p>
+            <span class="caption">You have tons of deadlines ahead of you. Fortunately you can sleep tonight.</span>
+            <span class="caption">Oh no you are dreaming.........</span>
             <span class="caption">The world has already ended. Zombies are everywhere.</span>
             <span class="caption">Now, your team are inside a forest. And they are coming for you.</span>
             <span class="caption">Protect your people and stay alive. So that you can find your way out.</span>

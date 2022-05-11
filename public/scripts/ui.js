@@ -181,6 +181,21 @@ const PlayerPairUpPanel = (function() {
 	};
 
     const show = function(user) {
+        //Show rank
+        fetch("/rank")
+            .then((res) => res.json() )
+            .then((json) => {
+                json.forEach((item) => {
+                    $("#rank-list").append("<div class=\"field-content row shadow\">" +
+                        `<span class=\"user-avatar\">${Avatar.getCode(item.player.avatar)}</span>` +
+                        `<span class=\"user-avatar\">${item.player.name} Score: ${item.score}</span>` +
+                        "</div>");
+                })
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         $("#pair-up-overlay").show();
         $("#player1-pair").on("click", () => {
             if(onlinePlayers[1] === null){

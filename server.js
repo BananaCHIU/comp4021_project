@@ -130,7 +130,7 @@ app.get("/signout", (req, res) => {
 });
 
 app.get("/rank", (req, res) => {
-    res.send(rank);
+    res.send(fs.readFileSync("data/rank.json", "utf8"));
 });
 
 //
@@ -147,10 +147,6 @@ io.use((socket, next) => {
 let onlineUsers = {};
 let player1 = null;
 let player2 = null;
-
-// Rank Structure
-// {player: UserObject, score: Score}
-let rank = [];
 
 function compare( a, b ) {
     if ( a.score < b.score ){
@@ -227,6 +223,7 @@ io.on("connection", (socket) => {
         socket.on("game over", (content) => {
             const obj = {player: content.user, score: content.score};
             let skip = false;
+            let rank = JSON.parse(fs.readFileSync("data/rank.json", "utf8"));
             rank.forEach((player) => {
                 if(_.isEqual(player, obj)) skip = true;
             })
@@ -234,10 +231,10 @@ io.on("connection", (socket) => {
                 rank.push(obj);
                 rank.sort(compare);
                 rank = rank.slice(0, 5);
+                fs.writeFileSync("data/rank.json", JSON.stringify(rank, null, " "))
             }
             player1 = null;
             player2 = null;
-            console.log(rank);
         })
     }
 });

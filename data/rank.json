@@ -1,0 +1,42 @@
+[
+ {
+  "player": {
+   "username": "banana",
+   "avatar": "Baby Chick 1",
+   "name": "banana"
+  },
+  "score": 45
+ },
+ {
+  "player": {
+   "username": "herman",
+   "avatar": "Octopus",
+   "name": "herman"
+  },
+  "score": 34
+ },
+ {
+  "player": {
+   "username": "banana",
+   "avatar": "Baby Chick 1",
+   "name": "banana"
+  },
+  "score": 25
+ },
+ {
+  "player": {
+   "username": "herman",
+   "avatar": "Octopus",
+   "name": "herman"
+  },
+  "score": 15
+ },
+ {
+  "player": {
+   "username": "herman",
+   "avatar": "Octopus",
+   "name": "herman"
+  },
+  "score": 6
+ }
+]
