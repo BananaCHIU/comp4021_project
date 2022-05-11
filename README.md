@@ -1,5 +1,5 @@
-# comp4021_project
+# COMP 4021 Project Group 26
 
-This is a shooting game. This game is designed for ***exactly 2 players***.
+This is a shooting game. This game is designed for ***EXACTLY 2 PLAYERS***.
 
 Project Starting Point: ```node server.js```
