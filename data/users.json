@@ -33,5 +33,10 @@
   "name": "Bing Chilling",
   "avatar": "Chicken",
   "password": "$2b$10$N9tqG.27teS8RS9tT48UBuXvRpHtPqVQ3pGeqevX8FmnsIuJQs622"
+ },
+ "test": {
+  "name": "test",
+  "avatar": "Hedgehog",
+  "password": "$2b$10$gnE.YwRxPTCx7y6IihPlBuyeGCzfljLZeublpbF/HRR7oLpNbf1u6"
  }
 }

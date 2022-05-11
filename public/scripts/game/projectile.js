@@ -1,7 +1,7 @@
 const Projectile = (ctx, player, gameArea, cheatDir = null) => {
 
-    const speed = 500;
-    const diagonal_speed = 354;
+    const speed = 1000;
+    const diagonal_speed = 708;
 
     const direction = cheatDir?? player.getDirection();
 

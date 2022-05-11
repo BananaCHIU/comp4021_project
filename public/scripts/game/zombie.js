@@ -74,7 +74,7 @@ const Zombie = function(ctx, x, y, gameArea, zomNum = 0) {
         moveLeftDown:   { x: 0, y: 562.5, width: 112.5, height: 112.5, rotate: 135, count: 4, timing: 200, loop: false },
     }];
 
-    let speed = 10;
+    let speed = 20;
     let zombieNum = zomNum;
     let dead = false;
     // This is the sprite object of the player created from the Sprite module.

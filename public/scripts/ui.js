@@ -115,8 +115,8 @@ const UserPanel = (function() {
             // Send a signout request
             if(GamePanel.isGaming()) {
                 GamePanel.gameOver();
-                $("#game-over").hide();
             }
+            $("#game-over").hide();
             Authentication.signout(
                 () => {
                     Socket.disconnect();
@@ -188,22 +188,6 @@ const PlayerPairUpPanel = (function() {
 
     const show = function(user) {
         //Show rank
-        fetch("/rank")
-            .then((res) => res.json() )
-            .then((json) => {
-                $("#rank-list").html("");
-                json.forEach((item, index) => {
-                    $("#rank-list").append("<div class=\"field-content row shadow\">" +
-                        `<span>${index + 1}. </span>` +
-                        `<span class=\"user-avatar\">${Avatar.getCode(item.player.avatar)}</span>` +
-                        `<span class=\"user-name\">${item.player.name} Score: ${item.score}</span>` +
-                        "</div>");
-                })
-
-            })
-            .catch((err) => {
-                console.log(err);
-            });
         $("#pair-up-overlay").fadeIn(500);
         $("#player1-pair").on("click", () => {
             if(onlinePlayers[1] === null){
@@ -276,7 +260,7 @@ const GamePanel = (() => {
     sounds.shoot.volume = 0.1;
     sounds.gameover.volume = 0.1;
 
-    const initialize = () => {}
+    const initialize = () => {$("#game-over").hide();}
 
     const doFrame = (now) => {
         if(aniFrame) cancelAnimationFrame(aniFrame);
@@ -426,11 +410,12 @@ const GamePanel = (() => {
     }
 
     const gameOver = () => {
+        Socket.gameOvered(Authentication.getUser(), myScore);
         keys = {};
         gaming = false;
         $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
         $("#user-panel .user-name").text(Authentication.getUser().name);
-        $("#game-over #game-over-text").html(`GAME OVER Score: ${myScore}`);
+        $("#game-over #game-over-score").html(`Score: ${myScore}`);
         clearMusicsAndContext();
 
         //Remove key control
@@ -448,17 +433,36 @@ const GamePanel = (() => {
         prevWalking = false;
         walking = false;
         fired = false;
-        myScore = 0;
-        //show game-over
-        sounds.gameover.currentTime = 2.5;
-        sounds.gameover.play();
-        $("#game-over").on("click", () => {
-            $("#game-over").fadeOut(500);
-            PlayerPairUpPanel.update({1:null, 2:null});
-            PlayerPairUpPanel.show(Authentication.getUser());
-        });
-        $("#game-over").fadeIn(500);
-        Socket.gameOvered(Authentication.getUser(), myScore);
+        setTimeout(() => {
+
+            fetch("/rank")
+                .then((res) => res.json() )
+                .then((json) => {
+                    $("#rank-list").html("");
+                    json.forEach((item, index) => {
+                        $("#rank-list").append("<div class=\"field-content row shadow\">" +
+                            `<span>${index + 1}. </span>` +
+                            `<span class=\"user-avatar\">${Avatar.getCode(item.player.avatar)}</span>` +
+                            `<span class=\"user-name\">${item.player.name} Score: ${item.score}</span>` +
+                            "</div>");
+                    })
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+            //show game-over
+            sounds.gameover.currentTime = 2.5;
+            sounds.gameover.play();
+            $("#restart").on("click", () => {
+                $("#game-over").fadeOut(500);
+                PlayerPairUpPanel.update({1:null, 2:null});
+                PlayerPairUpPanel.show(Authentication.getUser());
+            });
+            $("#game-over").fadeIn(500);
+            myScore = 0;
+        }, 200)
     }
 
     const getMyScore = () => {
@@ -672,7 +676,7 @@ const UI = (function() {
     };
 
     // The components of the UI are put here
-    const components = [SignInForm, UserPanel, PlayerPairUpPanel, DescriptionPanel];
+    const components = [SignInForm, UserPanel, PlayerPairUpPanel, DescriptionPanel, GamePanel];
 
     // This function initializes the UI
     const initialize = function() {

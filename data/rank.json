@@ -1,42 +1,42 @@
 [
  {
   "player": {
-   "username": "herman",
-   "avatar": "Octopus",
-   "name": "herman"
+   "username": "Isaac",
+   "avatar": "Rabbit Face",
+   "name": "Isaac Lee"
   },
-  "score": 363
+  "score": 271
  },
  {
   "player": {
-   "username": "Lee",
-   "avatar": "Rabbit",
-   "name": "Lee"
+   "username": "Isaac",
+   "avatar": "Rabbit Face",
+   "name": "Isaac Lee"
   },
-  "score": 137
+  "score": 174
  },
  {
   "player": {
-   "username": "banana",
-   "avatar": "Baby Chick 1",
-   "name": "banana"
+   "username": "test",
+   "avatar": "Hedgehog",
+   "name": "test"
   },
-  "score": 80
+  "score": 160
  },
  {
   "player": {
-   "username": "banana",
-   "avatar": "Baby Chick 1",
-   "name": "banana"
+   "username": "test",
+   "avatar": "Hedgehog",
+   "name": "test"
   },
-  "score": 76
+  "score": 99
  },
  {
   "player": {
-   "username": "herman",
-   "avatar": "Octopus",
-   "name": "herman"
+   "username": "test2",
+   "avatar": "Hedgehog",
+   "name": "test2"
   },
-  "score": 35
+  "score": 74
  }
 ]
