@@ -1,6 +1,6 @@
-const House = (ctx, gameArea) => {
+const House = function (ctx, gameArea) {
 
-    const { x, y } = gameArea.getBoundingBox().getCenter();
+    const { x, y } = gameArea.getCenter();
 
     const sprite = Sprite(ctx, x, y);
 
@@ -10,10 +10,6 @@ const House = (ctx, gameArea) => {
         .setScale(0.5)
         .setShadowScale({ x: 0, y: 0 })
         .useSheet("assets/house.png");
-
-    const draw = () => {
-        sprite.draw();
-    }
 
     // const update = () => {
     //     let { x, y } = sprite.getXY();
@@ -27,7 +23,6 @@ const House = (ctx, gameArea) => {
 
     return {
         getBoundingBox: sprite.getBoundingBox,
-        draw: draw,
-        // update: update
+        draw: sprite.draw,
     }
 }

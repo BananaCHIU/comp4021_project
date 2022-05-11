@@ -113,7 +113,9 @@ const UserPanel = (function() {
         // Click event for the signout button
         $("#signout-button").on("click", () => {
             // Send a signout request
-            GamePanel.gameOver();
+            if(GamePanel.isGaming()) {
+                GamePanel.gameOver();
+            }
             Authentication.signout(
                 () => {
                     Socket.disconnect();
@@ -217,6 +219,8 @@ const GamePanel = (() => {
     let walking = false;
     let fired = false;
 
+    let house;
+
     let zombies = new Map();
     let zombieCount = 0;
     let timerZombieSound;
@@ -246,8 +250,7 @@ const GamePanel = (() => {
     sounds.shoot.volume = 0.1;
     sounds.gameover.volume = 0.1;
 
-    const initialize = () => {
-    }
+    const initialize = () => {}
 
     const doFrame = (now) => {
         if(!gaming) return;
@@ -297,6 +300,10 @@ const GamePanel = (() => {
                     //zombie touch another player
                     anotherPlayer.die();
                 }
+                if(!player.getDead() && !anotherPlayer.getDead() && house.getBoundingBox().isPointInBox(pos.x, pos.y)) {
+                    //zombie reach the house
+                    GamePanel.gameOver()
+                }
             }
             else {
                 setTimeout(() => {
@@ -329,6 +336,7 @@ const GamePanel = (() => {
         /* Draw the sprites */
         player.draw();
         anotherPlayer.draw();
+        house.draw();
         bullets.forEach((bullet) => {
             bullet.draw();
         })
@@ -365,6 +373,8 @@ const GamePanel = (() => {
             anotherPlayer = new Player(context, player1XY.x, player1XY.y, gameArea, another.num); // Another player
         }
 
+        house = new House(context, gameArea);
+
         $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
         $("#user-panel .user-name").text(`${Authentication.getUser().name} Score: ${myScore}`);
 
@@ -396,6 +406,11 @@ const GamePanel = (() => {
             sound.pause();
         }
 
+        //Remove key control
+        $(document).off('keyup');
+        $(document).off('keydown');
+        $(document).off('keypress');
+
         //reset states
         bullets = [];
         zombies = new Map();
@@ -414,6 +429,10 @@ const GamePanel = (() => {
 
     const getMyScore = () => {
         return myScore;
+    }
+
+    const isGaming = () => {
+        return gaming;
     }
 
     const spawnZombie = () => {
@@ -593,7 +612,7 @@ const GamePanel = (() => {
         }, 200)
     }
 
-    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie, anotherPlayerCheatShoot, getMyScore };
+    return { gameStart, initialize, gameOver, anotherPlayerMove, anotherPlayerShoot, anotherSpawnZombie, anotherPlayerCheatShoot, getMyScore, isGaming };
 })();
 
 const UI = (function() {

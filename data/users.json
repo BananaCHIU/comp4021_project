@@ -28,5 +28,10 @@
   "name": "banana1",
   "avatar": "Butterfly",
   "password": "$2b$10$23n1z/9hKzyRyD8RCUtXfOCzrDWxtuRL1HeRQgJJpgfrH1eoatM/G"
+ },
+ "Bing": {
+  "name": "Bing Chilling",
+  "avatar": "Chicken",
+  "password": "$2b$10$N9tqG.27teS8RS9tT48UBuXvRpHtPqVQ3pGeqevX8FmnsIuJQs622"
  }
 }
