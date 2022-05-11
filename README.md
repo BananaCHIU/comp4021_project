@@ -2,4 +2,4 @@
 
 This is a shooting game. This game is designed for ***EXACTLY 2 PLAYERS***.
 
-Project Starting Point: ```node server.js```
+Project Starting Point: ```npm start```
