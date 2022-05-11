@@ -185,8 +185,9 @@ const PlayerPairUpPanel = (function() {
         fetch("/rank")
             .then((res) => res.json() )
             .then((json) => {
+                $("#rank-list").empty();
                 json.forEach((item) => {
-                    $("#rank-list").html("").append("<div class=\"field-content row shadow\">" +
+                    $("#rank-list").append("<div class=\"field-content row shadow\">" +
                         `<span class=\"user-avatar\">${Avatar.getCode(item.player.avatar)}</span>` +
                         `<span class=\"user-avatar\">${item.player.name} Score: ${item.score}</span>` +
                         "</div>");

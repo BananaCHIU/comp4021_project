@@ -17,6 +17,14 @@
  },
  {
   "player": {
+   "username": "Isaac",
+   "avatar": "Rabbit Face",
+   "name": "Isaac Lee"
+  },
+  "score": 33
+ },
+ {
+  "player": {
    "username": "banana",
    "avatar": "Baby Chick 1",
    "name": "banana"
@@ -25,18 +33,10 @@
  },
  {
   "player": {
-   "username": "herman",
-   "avatar": "Octopus",
-   "name": "herman"
+   "username": "Isaac",
+   "avatar": "Rabbit Face",
+   "name": "Isaac Lee"
   },
-  "score": 15
- },
- {
-  "player": {
-   "username": "herman",
-   "avatar": "Octopus",
-   "name": "herman"
-  },
-  "score": 6
+  "score": 22
  }
 ]
