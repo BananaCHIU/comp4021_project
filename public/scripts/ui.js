@@ -165,6 +165,10 @@ const PlayerPairUpPanel = (function() {
                 $(`#player${num}-pair .player${num}-avatar`).html(Avatar.getCode(onlinePlayers[num].avatar));
                 $(`#player${num}-pair .player${num}-name`).text(onlinePlayers[num].name);
             }
+            else {
+                $(`#player${num}-pair .player${num}-avatar`).html("");
+                $(`#player${num}-pair .player${num}-name`).text(`PLAYER ${num}`);
+            }
         }
     };
 

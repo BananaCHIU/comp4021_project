@@ -25,11 +25,11 @@
  },
  {
   "player": {
-   "username": "banana",
-   "avatar": "Baby Chick 1",
-   "name": "banana"
+   "username": "Lee",
+   "avatar": "Rabbit",
+   "name": "Lee"
   },
-  "score": 25
+  "score": 33
  },
  {
   "player": {
@@ -37,6 +37,6 @@
    "avatar": "Rabbit Face",
    "name": "Isaac Lee"
   },
-  "score": 22
+  "score": 30
  }
 ]
