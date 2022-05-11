@@ -244,13 +244,15 @@ const GamePanel = (() => {
     let zombies = new Map();
     let zombieCount = 0;
     let timerZombieSound;
-    let totalGameTime = 1000 * 60 * 4;
+    let totalGameTime = 60 * 4;             //Max game time 4 mins
     let gameStartTime = 0;
 
     let myScore = 0;
     let myPlayerNum;
 
     let zombieSpawnTimer = null;
+    let timeToSpawnZombie = 1000;
+    let lastCheatShoot = 0;
 
     const sounds = {
         background: new Audio("assets/bgm.mp3"),
@@ -292,6 +294,7 @@ const GamePanel = (() => {
             for(const [key, zombie] of zombies){
                 if(!zombie.getDead() && zombie.getBoundingBox().isPointInBox(x, y)){
                     //hit zombie
+                    if(timeToSpawnZombie >= 300) timeToSpawnZombie *= 0.96;
                     zombie.die();
                     if(bullet.getPlayer().getPlayerNum() === myPlayerNum){
                         myScore++;
@@ -410,7 +413,7 @@ const GamePanel = (() => {
         bullets = [];
         zombies = new Map();
         zombieCount = 0;
-        zombieSpawnTimer = spawnZombie();
+        zombieSpawnTimer = setTimeout(spawnZombie, timeToSpawnZombie);
 
         /* Start the game */
         requestAnimationFrame(doFrame);
@@ -436,7 +439,7 @@ const GamePanel = (() => {
         bullets = [];
         zombies = new Map();
         zombieCount = 0;
-        clearInterval(zombieSpawnTimer);
+        clearTimeout(zombieSpawnTimer);
         prevWalking = false;
         walking = false;
         fired = false;
@@ -457,16 +460,16 @@ const GamePanel = (() => {
     }
 
     const spawnZombie = () => {
-        return setInterval(() => {
-            const randomXY = gameArea.randomPoint();
-            const zomNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
-            const spawnSide = Math.round(Math.random() + 0.1);
-            const randomX = [60, gameArea.getRight() - gameArea.getLeft()];
-            zombies.set(zombieCount, Zombie(context, randomX[spawnSide], randomXY.y, gameArea, zomNum))
-            zombieCount++;
-            Socket.zombieSpawned({x:randomX[spawnSide], y: randomXY.y}, zomNum);
-        }, 1000)
+        const randomXY = gameArea.randomPoint();
+        const zomNum = Math.floor(Math.random() * (2 - 0 + 1) + 0);
+        const spawnSide = Math.round(Math.random() + 0.1);
+        const randomX = [60, gameArea.getRight() - gameArea.getLeft()];
+        zombies.set(zombieCount, Zombie(context, randomX[spawnSide], randomXY.y, gameArea, zomNum))
+        zombieCount++;
+        Socket.zombieSpawned({x:randomX[spawnSide], y: randomXY.y}, zomNum);
+        zombieSpawnTimer = setTimeout(spawnZombie, timeToSpawnZombie);
     }
+
 
     const anotherSpawnZombie = (x, y, zomNum) => {
         zombies.set(zombieCount, Zombie(context, x, y, gameArea, zomNum))
@@ -575,16 +578,20 @@ const GamePanel = (() => {
         }
         //Cheat Key: Maximum Bullet Rate
         if(keys[67]) {
-            for(let i = 1; i <= 8; i++) {
-                bullets.push(Projectile(context, player, gameArea, i));
+            let now = Date.now();
+            if(lastCheatShoot + 500 <= now){
+                lastCheatShoot = now;
+                for(let i = 1; i <= 8; i++) {
+                    bullets.push(Projectile(context, player, gameArea, i));
+                }
+                sounds.shoot.currentTime = 0;
+                sounds.shoot.play();
+                setTimeout(() => {
+                    sounds.shellDrop.currentTime = 0;
+                    sounds.shellDrop.play();
+                }, 200)
+                Socket.playerCheatShoot();
             }
-            sounds.shoot.currentTime = 0;
-            sounds.shoot.play();
-            setTimeout(() => {
-                sounds.shellDrop.currentTime = 0;
-                sounds.shellDrop.play();
-            }, 200)
-            Socket.playerCheatShoot();
         }
         if(prevWalking !== walking){
             sounds.footstep.play();
