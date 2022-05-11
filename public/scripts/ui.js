@@ -328,7 +328,7 @@ const GamePanel = (() => {
                     //zombie touch another player
                     anotherPlayer.die();
                 }
-                if(!player.getDead() && !anotherPlayer.getDead() && house.getBoundingBox().isPointInBox(pos.x, pos.y)) {
+                if(house.getBoundingBox().isPointInBox(pos.x, pos.y)) {
                     //zombie reach the house
                     GamePanel.gameOver()
                 }
@@ -384,6 +384,7 @@ const GamePanel = (() => {
     }
 
     const gameStart = function (me, another) {
+        keys = {};
         const player1XY = { x: 427, y: 240 }
         const player2XY = { x: 727, y: 240 }
         gaming = true;
@@ -425,6 +426,7 @@ const GamePanel = (() => {
     }
 
     const gameOver = () => {
+        keys = {};
         gaming = false;
         $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
         $("#user-panel .user-name").text(Authentication.getUser().name);
@@ -441,6 +443,7 @@ const GamePanel = (() => {
         zombies = new Map();
         zombieCount = 0;
         clearTimeout(zombieSpawnTimer);
+        clearTimeout(timerZombieSound);
         timeToSpawnZombie = 1000;
         prevWalking = false;
         walking = false;
