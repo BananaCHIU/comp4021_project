@@ -185,8 +185,9 @@ const PlayerPairUpPanel = (function() {
         fetch("/rank")
             .then((res) => res.json() )
             .then((json) => {
+                $("#rank-list").html("");
                 json.forEach((item) => {
-                    $("#rank-list").html("").append("<div class=\"field-content row shadow\">" +
+                    $("#rank-list").append("<div class=\"field-content row shadow\">" +
                         `<span class=\"user-avatar\">${Avatar.getCode(item.player.avatar)}</span>` +
                         `<span class=\"user-avatar\">${item.player.name} Score: ${item.score}</span>` +
                         "</div>");
@@ -415,6 +416,7 @@ const GamePanel = (() => {
         gaming = false;
         $("#user-panel .user-avatar").html(Avatar.getCode(Authentication.getUser().avatar));
         $("#user-panel .user-name").text(Authentication.getUser().name);
+        $("#game-over #game-over-text").html(`GAME OVER Score: ${myScore}`);
         context.clearRect(0,0,cv.width,cv.height);
         clearTimeout(timerZombieSound);
         for(const [key, sound] of Object.entries(sounds)) {
