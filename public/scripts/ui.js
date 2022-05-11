@@ -432,6 +432,7 @@ const GamePanel = (() => {
         clearTimeout(timerZombieSound);
         for(const [key, sound] of Object.entries(sounds)) {
             sound.pause();
+            sound.currentTime = 0;
         }
 
         //Remove key control
