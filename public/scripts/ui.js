@@ -448,6 +448,7 @@ const GamePanel = (() => {
         prevWalking = false;
         walking = false;
         fired = false;
+        myScore = 0;
         //show game-over
         sounds.gameover.currentTime = 2.5;
         sounds.gameover.play();
